@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Willow Branch — Library Catalog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241F17;
+    --ink-soft:#524A3B;
+    --muted:#8a8272;
+    --green:#2F5233;
+    --green-deep:#1D3620;
+    --burgundy:#6B2D3C;
+    --brass:#A87C3F;
+    --brass-light:#C9A96E;
+    --paper:#FAF8F2;
+    --card:#F3EEE1;
+    --card-line:#DCD3BC;
+    --rust:#8B3A3A;
+    --rust-bg:#F3E3DF;
+    --green-bg:#E4EBDF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  /* ---------- shell ---------- */
+  .shell{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    min-height:100vh;
+  }
+  @media (max-width:760px){
+    .shell{grid-template-columns:1fr;}
+    .drawer{
+      position:sticky; top:0; z-index:20;
+      display:flex; flex-direction:row; overflow-x:auto;
+      border-right:none; border-bottom:1px solid var(--card-line);
+      padding:0.75rem 1rem;
+      gap:0.4rem;
+    }
+    .drawer .brand{display:none;}
+    .drawer nav{display:flex; flex-direction:row; gap:0.4rem; width:100%;}
+    .drawer nav button{border-left:none; border-bottom:2px solid transparent; white-space:nowrap;}
+    .drawer nav button.active{border-left:none; border-bottom:2px solid var(--brass);}
+  }
+
+  /* ---------- drawer / nav ---------- */
+  .drawer{
+    background:var(--green-deep);
+    color:#EDE7D6;
+    border-right:1px solid var(--green-deep);
+    padding:1.75rem 0 1.5rem;
+    position:sticky; top:0; height:100vh;
+  }
+  .brand{padding:0 1.5rem 1.75rem; border-bottom:1px solid rgba(237,231,214,0.15); margin-bottom:1rem;}
+  .brand .display{font-size:1.3rem; color:#F6F2E7; line-height:1.15;}
+  .brand .tag{font-size:0.72rem; color:var(--brass-light); margin-top:0.35rem; letter-spacing:0.02em;}
+  .drawer nav{display:flex; flex-direction:column; gap:0.15rem; padding:0 0.75rem;}
+  .drawer nav button{
+    text-align:left;
+    background:none; border:none; border-left:3px solid transparent;
+    color:#D8D2C0; font-size:0.92rem;
+    padding:0.6rem 0.75rem;
+    cursor:pointer; border-radius:0;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .drawer nav button .count{
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--brass-light);
+    background:rgba(255,255,255,0.06); padding:0.05rem 0.4rem;
+  }
+  .drawer nav button:hover{color:#fff; background:rgba(255,255,255,0.05);}
+  .drawer nav button.active{color:#fff; border-left-color:var(--brass); background:rgba(255,255,255,0.07);}
+
+  /* ---------- main ---------- */
+  main{padding:2rem 2.5rem 4rem; max-width:1040px;}
+  @media (max-width:760px){main{padding:1.25rem 1.1rem 3rem;}}
+
+  .page-head{margin-bottom:1.75rem;}
+  .page-head h1{font-size:1.7rem;}
+  .page-head p{margin:0.35rem 0 0; color:var(--ink-soft); font-size:0.94rem;}
+
+  /* stats */
+  .stats{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--card-line);
+    border:1px solid var(--card-line);
+    margin-bottom:2rem;
+  }
+  @media (max-width:600px){.stats{grid-template-columns:repeat(2,1fr);}}
+  .stat{background:var(--paper); padding:1rem 1.1rem;}
+  .stat .num{font-family:'Fraunces',serif; font-size:1.9rem; font-weight:600; line-height:1;}
+  .stat .lbl{font-size:0.76rem; color:var(--muted); margin-top:0.4rem;}
+  .stat.warn .num{color:var(--rust);}
+
+  /* toolbar */
+  .toolbar{display:flex; gap:0.6rem; margin-bottom:1.5rem; flex-wrap:wrap;}
+  .toolbar input[type=text], .toolbar select{
+    font-family:'IBM Plex Sans',sans-serif;
+    border:1px solid var(--card-line);
+    background:#fff;
+    padding:0.55rem 0.7rem;
+    font-size:0.9rem;
+    color:var(--ink);
+  }
+  .toolbar input[type=text]{flex:1; min-width:180px;}
+  .toolbar select{min-width:140px;}
+
+  /* index cards */
+  .catalog{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:1rem;}
+  .index-card{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--card-line);
+    padding:1.1rem 1rem 1rem;
+  }
+  .index-card::before{
+    content:"";
+    position:absolute; top:0.55rem; left:50%; transform:translateX(-50%);
+    width:14px; height:14px; border-radius:50%;
+    background:var(--paper); border:1px solid var(--card-line);
+  }
+  .spine-tab{
+    display:inline-block; font-size:0.68rem; letter-spacing:0.02em;
+    padding:0.15rem 0.5rem; margin-top:0.75rem;
+    color:#fff;
+  }
+  .index-card h3{font-size:1.05rem; margin-top:0.6rem; line-height:1.25;}
+  .index-card .author{font-size:0.85rem; color:var(--ink-soft); margin-top:0.2rem;}
+  .index-card .meta{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-top:0.85rem; padding-top:0.6rem; border-top:1px dashed var(--card-line);
+    font-size:0.76rem; color:var(--muted);
+  }
+  .index-card .call{font-family:'IBM Plex Mono',monospace; font-size:0.76rem; color:var(--ink-soft);}
+  .index-card .avail{font-size:0.78rem; margin-top:0.6rem; color:var(--ink-soft);}
+  .index-card .avail b{color:var(--green);}
+  .index-card .avail.none b{color:var(--rust);}
+  .card-actions{margin-top:0.8rem; display:flex; gap:0.4rem;}
+  .btn{
+    border:1px solid var(--ink); background:none; color:var(--ink);
+    padding:0.4rem 0.75rem; font-size:0.8rem; cursor:pointer;
+  }
+  .btn:hover{background:var(--ink); color:var(--paper);}
+  .btn.primary{background:var(--green); border-color:var(--green); color:#fff;}
+  .btn.primary:hover{background:var(--green-deep); border-color:var(--green-deep);}
+  .btn.ghost{border-color:var(--card-line); color:var(--ink-soft);}
+  .btn.ghost:hover{background:var(--card-line); color:var(--ink);}
+  .btn.danger{border-color:var(--rust); color:var(--rust);}
+  .btn.danger:hover{background:var(--rust); color:#fff;}
+  .btn:disabled{opacity:0.4; cursor:not-allowed;}
+  .btn:disabled:hover{background:none; color:var(--ink);}
+
+  /* empty state */
+  .empty{
+    border:1px dashed var(--card-line); padding:3rem 1.5rem; text-align:center;
+    color:var(--ink-soft);
+  }
+  .empty h3{font-size:1.15rem; margin-bottom:0.4rem;}
+  .empty p{margin:0 0 1rem; font-size:0.9rem;}
+
+  /* ledger (checkouts) */
+  .ledger{border:1px solid var(--card-line);}
+  .ledger-row{
+    display:grid; grid-template-columns:2fr 1.3fr 1fr auto;
+    gap:1rem; align-items:center;
+    padding:0.85rem 1.1rem;
+    border-bottom:1px solid var(--card-line);
+    background:var(--paper);
+  }
+  .ledger-row:last-child{border-bottom:none;}
+  .ledger-row.overdue{background:var(--rust-bg);}
+  .ledger-row .title{font-weight:500;}
+  .ledger-row .sub{font-size:0.78rem; color:var(--muted); margin-top:0.1rem;}
+  .ledger-row .due{font-size:0.85rem;}
+  .ledger-row .due.late{color:var(--rust); font-weight:500;}
+  .tag-pill{
+    display:inline-block; font-size:0.68rem; padding:0.12rem 0.5rem;
+    border:1px solid var(--rust); color:var(--rust); margin-left:0.5rem;
+  }
+  @media (max-width:640px){
+    .ledger-row{grid-template-columns:1fr; gap:0.3rem;}
+  }
+
+  /* form */
+  .form-card{
+    background:var(--card); border:1px solid var(--card-line);
+    padding:1.5rem 1.5rem 1.75rem; max-width:560px;
+  }
+  .field{margin-bottom:1rem;}
+  .field label{display:block; font-size:0.8rem; color:var(--ink-soft); margin-bottom:0.3rem;}
+  .field input, .field select{
+    width:100%; padding:0.55rem 0.65rem; border:1px solid var(--card-line);
+    background:#fff; font-family:inherit; font-size:0.9rem; color:var(--ink);
+  }
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:1rem;}
+  @media (max-width:600px){.field-row{grid-template-columns:1fr;}}
+  .field .err{color:var(--rust); font-size:0.78rem; margin-top:0.3rem; display:none;}
+  .field.invalid input, .field.invalid select{border-color:var(--rust);}
+  .field.invalid .err{display:block;}
+
+  /* modal */
+  .overlay{
+    position:fixed; inset:0; background:rgba(36,31,23,0.45);
+    display:none; align-items:center; justify-content:center; z-index:50; padding:1rem;
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:var(--paper); border:1px solid var(--card-line);
+    max-width:400px; width:100%; padding:1.5rem;
+  }
+  .modal h3{font-size:1.15rem; margin-bottom:0.3rem;}
+  .modal .book-sub{font-size:0.85rem; color:var(--ink-soft); margin-bottom:1.1rem;}
+  .modal-actions{display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.3rem;}
+
+  .toast{
+    position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(8px);
+    background:var(--ink); color:var(--paper); padding:0.6rem 1.1rem;
+    font-size:0.85rem; opacity:0; pointer-events:none; transition:opacity 0.2s, transform 0.2s;
+    z-index:60;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  .loading-note{color:var(--muted); font-size:0.85rem; padding:2rem 0;}
+
+  .section-gap{margin-top:2.25rem;}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="drawer">
+    <div class="brand">
+      <div class="display">The Willow Branch</div>
+      <div class="tag">Catalog &amp; circulation desk</div>
+    </div>
+    <nav id="nav">
+      <button data-view="catalog" class="active">Catalog <span class="count" id="nav-catalog-count">0</span></button>
+      <button data-view="checkouts">Checked out <span class="count" id="nav-checkouts-count">0</span></button>
+      <button data-view="add">Add a book</button>
+    </nav>
+  </aside>
+
+  <main>
+    <div id="app">
+      <p class="loading-note">Opening the catalog…</p>
+    </div>
+  </main>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal-body"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+
+  var GENRES = {
+    "Fiction":   "#6B2D3C",
+    "Nonfiction":"#2F5233",
+    "Science":   "#2E5266",
+    "Biography": "#A87C3F",
+    "Mystery":   "#4A3B5C",
+    "Children's":"#6B7A3B",
+    "Poetry":    "#8B3A3A",
+    "Other":     "#5C5548"
+  };
+  var LOAN_DAYS = 21;
+
+  var state = { books: [], loans: [], loaded:false, view:"catalog", search:"", genreFilter:"" };
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function todayISO(){ return new Date().toISOString().slice(0,10); }
+  function addDays(iso, n){
+    var d = new Date(iso + "T00:00:00");
+    d.setDate(d.getDate()+n);
+    return d.toISOString().slice(0,10);
+  }
+  function fmtDate(iso){
+    var d = new Date(iso + "T00:00:00");
+    return d.toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"});
+  }
+  function isOverdue(iso){ return iso < todayISO(); }
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function showToast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+  }
+
+  /* ---------- storage ---------- */
+  async function loadData(){
+    try{
+      var res = await window.storage.get("library-data", false);
+      if(res && res.value){
+        var parsed = JSON.parse(res.value);
+        state.books = parsed.books || [];
+        state.loans = parsed.loans || [];
+      }
+    }catch(e){
+      state.books = [];
+      state.loans = [];
+    }
+    state.loaded = true;
+  }
+
+  async function saveData(){
+    try{
+      var payload = JSON.stringify({books:state.books, loans:state.loans});
+      var res = await window.storage.set("library-data", payload, false);
+      if(!res){ showToast("Could not save — try again"); }
+    }catch(e){
+      showToast("Could not save — try again");
+    }
+  }
+
+  function seedIfEmpty(){
+    if(state.books.length) return;
+    state.books = [
+      {id:uid(), title:"The Hollow Orchard", author:"Marguerite Sten", isbn:"978-0-14-303943-3", genre:"Fiction", call:"FIC STE", copies:3},
+      {id:uid(), title:"A Field Guide to Silence", author:"Owen Petrakis", isbn:"978-1-59448-897-6", genre:"Nonfiction", call:"170 PET", copies:2},
+      {id:uid(), title:"Tidewater Physics", author:"Dr. Halima Osei", isbn:"978-0-19-285678-1", genre:"Science", call:"530 OSE", copies:1},
+      {id:uid(), title:"Coal and Candlelight", author:"Reuben Ashby", isbn:"978-0-465-04994-9", genre:"Biography", call:"B ASH", copies:2},
+      {id:uid(), title:"The Ninth Locksmith", author:"Priya Ramanathan", isbn:"978-0-7352-1129-6", genre:"Mystery", call:"MYS RAM", copies:2},
+      {id:uid(), title:"Where the Foxes Learn to Read", author:"Colm Whitfield", isbn:"978-0-545-01022-1", genre:"Children's", call:"J FIC WHI", copies:4},
+      {id:uid(), title:"Salt Lines", author:"Ines Carrizo", isbn:"978-1-55597-654-2", genre:"Poetry", call:"811 CAR", copies:1}
+    ];
+  }
+
+  /* ---------- derived data ---------- */
+  function activeLoansFor(bookId){
+    return state.loans.filter(function(l){ return l.bookId === bookId && !l.returnedAt; });
+  }
+  function copiesOut(bookId){ return activeLoansFor(bookId).length; }
+  function copiesAvailable(book){ return book.copies - copiesOut(book.id); }
+  function allActiveLoans(){ return state.loans.filter(function(l){ return !l.returnedAt; }); }
+  function overdueLoans(){ return allActiveLoans().filter(function(l){ return isOverdue(l.dueDate); }); }
+
+  /* ---------- rendering ---------- */
+  function render(){
+    document.querySelectorAll("#nav button").forEach(function(b){
+      b.classList.toggle("active", b.dataset.view === state.view);
+    });
+    document.getElementById("nav-catalog-count").textContent = state.books.length;
+    document.getElementById("nav-checkouts-count").textContent = allActiveLoans().length;
+
+    var app = document.getElementById("app");
+    if(!state.loaded){
+      app.innerHTML = '<p class="loading-note">Opening the catalog…</p>';
+      return;
+    }
+    if(state.view === "catalog") app.innerHTML = renderCatalog();
+    else if(state.view === "checkouts") app.innerHTML = renderCheckouts();
+    else if(state.view === "add") app.innerHTML = renderAddForm();
+
+    attachViewHandlers();
+  }
+
+  function renderStats(){
+    var totalTitles = state.books.length;
+    var totalCopies = state.books.reduce(function(s,b){ return s + Number(b.copies); }, 0);
+    var out = allActiveLoans().length;
+    var late = overdueLoans().length;
+    return '' +
+      '<div class="stats">' +
+        '<div class="stat"><div class="num">'+totalTitles+'</div><div class="lbl">Titles in catalog</div></div>' +
+        '<div class="stat"><div class="num">'+totalCopies+'</div><div class="lbl">Total copies</div></div>' +
+        '<div class="stat"><div class="num">'+out+'</div><div class="lbl">Checked out</div></div>' +
+        '<div class="stat '+(late? 'warn':'')+'"><div class="num">'+late+'</div><div class="lbl">Overdue</div></div>' +
+      '</div>';
+  }
+
+  function renderCatalog(){
+    var genreOptions = Object.keys(GENRES).map(function(g){
+      return '<option value="'+esc(g)+'"'+(state.genreFilter===g?' selected':'')+'>'+esc(g)+'</option>';
+    }).join("");
+
+    var q = state.search.trim().toLowerCase();
+    var books = state.books.filter(function(b){
+      var matchesQ = !q || (b.title.toLowerCase().indexOf(q)>-1 || b.author.toLowerCase().indexOf(q)>-1 || (b.isbn||"").toLowerCase().indexOf(q)>-1);
+      var matchesG = !state.genreFilter || b.genre === state.genreFilter;
+      return matchesQ && matchesG;
+    }).sort(function(a,b){ return a.title.localeCompare(b.title); });
+
+    var cardsHtml = books.map(function(b){
+      var avail = copiesAvailable(b);
+      var color = GENRES[b.genre] || GENRES.Other;
+      return '' +
+        '<div class="index-card">' +
+          '<span class="spine-tab" style="background:'+color+'">'+esc(b.genre)+'</span>' +
+          '<h3>'+esc(b.title)+'</h3>' +
+          '<div class="author">'+esc(b.author)+'</div>' +
+          '<div class="meta"><span class="call">'+esc(b.call||"—")+'</span><span>'+esc(b.isbn||"")+'</span></div>' +
+          '<div class="avail'+(avail<=0?' none':'')+'"><b>'+Math.max(avail,0)+'</b> of '+esc(b.copies)+' available</div>' +
+          '<div class="card-actions">' +
+            '<button class="btn primary" data-checkout="'+b.id+'" '+(avail<=0?'disabled':'')+'>Check out</button>' +
+            '<button class="btn ghost" data-edit="'+b.id+'">Edit</button>' +
+            '<button class="btn danger" data-delete="'+b.id+'">Remove</button>' +
+          '</div>' +
+        '</div>';
+    }).join("");
+
+    var listOrEmpty = books.length ? '<div class="catalog">'+cardsHtml+'</div>' :
+      '<div class="empty"><h3>No cards match that search</h3><p>Try a different title, author, or genre — or add a new book to the catalog.</p><button class="btn primary" data-goto="add">Add a book</button></div>';
+
+    if(!state.books.length){
+      listOrEmpty = '<div class="empty"><h3>The catalog is empty</h3><p>Add your first book to start building the collection.</p><button class="btn primary" data-goto="add">Add a book</button></div>';
+    }
+
+    return '' +
+      '<div class="page-head"><h1>Catalog</h1><p>Browse titles, check availability, and check books out.</p></div>' +
+      renderStats() +
+      '<div class="toolbar">' +
+        '<input type="text" id="search-input" placeholder="Search by title, author, or ISBN" value="'+esc(state.search)+'">' +
+        '<select id="genre-filter"><option value="">All genres</option>'+genreOptions+'</select>' +
+      '</div>' +
+      listOrEmpty;
+  }
+
+  function renderCheckouts(){
+    var loans = allActiveLoans().slice().sort(function(a,b){ return a.dueDate.localeCompare(b.dueDate); });
+    var rows = loans.map(function(l){
+      var book = state.books.find(function(b){ return b.id === l.bookId; });
+      var late = isOverdue(l.dueDate);
+      return '' +
+        '<div class="ledger-row'+(late?' overdue':'')+'">' +
+          '<div><div class="title">'+esc(book? book.title : "Unknown title")+'</div><div class="sub">'+esc(book? book.author : "")+'</div></div>' +
+          '<div><div class="sub">Borrower</div><div>'+esc(l.borrower)+'</div></div>' +
+          '<div class="due '+(late?'late':'')+'">Due '+fmtDate(l.dueDate)+(late?'<span class="tag-pill">Overdue</span>':'')+'</div>' +
+          '<div><button class="btn primary" data-return="'+l.id+'">Mark returned</button></div>' +
+        '</div>';
+    }).join("");
+
+    var body = loans.length ? '<div class="ledger">'+rows+'</div>' :
+      '<div class="empty"><h3>Nothing checked out right now</h3><p>Loans will appear here once you check a book out from the catalog.</p><button class="btn primary" data-goto="catalog">Go to catalog</button></div>';
+
+    return '' +
+      '<div class="page-head"><h1>Checked out</h1><p>Active loans, sorted by due date. Loans run '+LOAN_DAYS+' days from checkout.</p></div>' +
+      body;
+  }
+
+  function renderAddForm(){
+    var genreOptions = Object.keys(GENRES).map(function(g){ return '<option value="'+esc(g)+'">'+esc(g)+'</option>'; }).join("");
+    return '' +
+      '<div class="page-head"><h1>Add a book</h1><p>New titles enter the catalog with at least one copy on the shelf.</p></div>' +
+      '<div class="form-card">' +
+        '<form id="add-form" novalidate>' +
+          '<div class="field" data-field="title"><label for="f-title">Title</label><input id="f-title" type="text" placeholder="The Hollow Orchard"><div class="err">Enter a title.</div></div>' +
+          '<div class="field" data-field="author"><label for="f-author">Author</label><input id="f-author" type="text" placeholder="Marguerite Sten"><div class="err">Enter an author.</div></div>' +
+          '<div class="field-row">' +
+            '<div class="field" data-field="genre"><label for="f-genre">Genre</label><select id="f-genre">'+genreOptions+'</select></div>' +
+            '<div class="field" data-field="copies"><label for="f-copies">Copies</label><input id="f-copies" type="text" inputmode="numeric" placeholder="1"><div class="err">Enter a whole number of at least 1.</div></div>' +
+          '</div>' +
+          '<div class="field-row">' +
+            '<div class="field" data-field="call"><label for="f-call">Call number</label><input id="f-call" class="mono" type="text" placeholder="FIC STE"></div>' +
+            '<div class="field" data-field="isbn"><label for="f-isbn">ISBN</label><input id="f-isbn" class="mono" type="text" placeholder="978-0-14-303943-3"></div>' +
+          '</div>' +
+          '<button type="submit" class="btn primary">Add to catalog</button>' +
+        '</form>' +
+      '</div>';
+  }
+
+  /* ---------- modal (checkout) ---------- */
+  function openCheckoutModal(bookId){
+    var book = state.books.find(function(b){ return b.id === bookId; });
+    if(!book) return;
+    var overlay = document.getElementById("overlay");
+    var body = document.getElementById("modal-body");
+    body.innerHTML = '' +
+      '<h3>Check out</h3>' +
+      '<div class="book-sub">'+esc(book.title)+' — '+esc(book.author)+'</div>' +
+      '<div class="field" data-field="borrower"><label for="m-borrower">Borrower name</label><input id="m-borrower" type="text" placeholder="Full name"><div class="err">Enter the borrower\'s name.</div></div>' +
+      '<div class="field"><label>Due date</label><input type="text" value="'+fmtDate(addDays(todayISO(), LOAN_DAYS))+'" disabled></div>' +
+      '<div class="modal-actions">' +
+        '<button class="btn ghost" id="modal-cancel">Cancel</button>' +
+        '<button class="btn primary" id="modal-confirm">Confirm checkout</button>' +
+      '</div>';
+    overlay.classList.add("open");
+
+    document.getElementById("modal-cancel").onclick = closeModal;
+    document.getElementById("modal-confirm").onclick = async function(){
+      var input = document.getElementById("m-borrower");
+      var field = input.closest(".field");
+      var name = input.value.trim();
+      if(!name){
+        field.classList.add("invalid");
+        return;
+      }
+      field.classList.remove("invalid");
+      state.loans.push({
+        id: uid(),
+        bookId: book.id,
+        borrower: name,
+        checkedOutAt: todayISO(),
+        dueDate: addDays(todayISO(), LOAN_DAYS),
+        returnedAt: null
+      });
+      closeModal();
+      await saveData();
+      showToast('"'+book.title+'" checked out to '+name);
+      render();
+    };
+  }
+
+  function closeModal(){
+    document.getElementById("overlay").classList.remove("open");
+  }
+
+  /* ---------- edit book modal ---------- */
+  function openEditModal(bookId){
+    var book = state.books.find(function(b){ return b.id === bookId; });
+    if(!book) return;
+    var out = copiesOut(book.id);
+    var genreOptions = Object.keys(GENRES).map(function(g){
+      return '<option value="'+esc(g)+'"'+(g===book.genre?' selected':'')+'>'+esc(g)+'</option>';
+    }).join("");
+    var overlay = document.getElementById("overlay");
+    var body = document.getElementById("modal-body");
+    body.innerHTML = '' +
+      '<h3>Edit book</h3>' +
+      '<div class="book-sub">Editing catalog entry</div>' +
+      '<div class="field" data-field="title"><label>Title</label><input id="e-title" type="text" value="'+esc(book.title)+'"><div class="err">Enter a title.</div></div>' +
+      '<div class="field" data-field="author"><label>Author</label><input id="e-author" type="text" value="'+esc(book.author)+'"><div class="err">Enter an author.</div></div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>Genre</label><select id="e-genre">'+genreOptions+'</select></div>' +
+        '<div class="field" data-field="copies"><label>Copies</label><input id="e-copies" type="text" inputmode="numeric" value="'+esc(book.copies)+'"><div class="err">Must be at least '+out+' (copies currently out).</div></div>' +
+      '</div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>Call number</label><input id="e-call" class="mono" type="text" value="'+esc(book.call||"")+'"></div>' +
+        '<div class="field"><label>ISBN</label><input id="e-isbn" class="mono" type="text" value="'+esc(book.isbn||"")+'"></div>' +
+      '</div>' +
+      '<div class="modal-actions">' +
+        '<button class="btn ghost" id="modal-cancel">Cancel</button>' +
+        '<button class="btn primary" id="modal-save">Save changes</button>' +
+      '</div>';
+    overlay.classList.add("open");
+
+    document.getElementById("modal-cancel").onclick = closeModal;
+    document.getElementById("modal-save").onclick = async function(){
+      var titleField = document.getElementById("e-title").closest(".field");
+      var authorField = document.getElementById("e-author").closest(".field");
+      var copiesField = document.getElementById("e-copies").closest(".field");
+      var title = document.getElementById("e-title").value.trim();
+      var author = document.getElementById("e-author").value.trim();
+      var copiesRaw = document.getElementById("e-copies").value.trim();
+      var copies = parseInt(copiesRaw, 10);
+
+      var valid = true;
+      if(!title){ titleField.classList.add("invalid"); valid=false; } else titleField.classList.remove("invalid");
+      if(!author){ authorField.classList.add("invalid"); valid=false; } else authorField.classList.remove("invalid");
+      if(!copiesRaw || isNaN(copies) || copies < 1 || !Number.isInteger(copies) || copies < out){
+        copiesField.classList.add("invalid"); valid=false;
+      } else copiesField.classList.remove("invalid");
+      if(!valid) return;
+
+      book.title = title;
+      book.author = author;
+      book.genre = document.getElementById("e-genre").value;
+      book.copies = copies;
+      book.call = document.getElementById("e-call").value.trim();
+      book.isbn = document.getElementById("e-isbn").value.trim();
+
+      closeModal();
+      await saveData();
+      showToast("Changes saved");
+      render();
+    };
+  }
+
+  function openDeleteConfirm(bookId){
+    var book = state.books.find(function(b){ return b.id === bookId; });
+    if(!book) return;
+    var out = copiesOut(book.id);
+    var overlay = document.getElementById("overlay");
+    var body = document.getElementById("modal-body");
+    if(out > 0){
+      body.innerHTML = '' +
+        '<h3>Can\'t remove this book</h3>' +
+        '<div class="book-sub">"'+esc(book.title)+'" has '+out+' cop'+(out===1?'y':'ies')+' still checked out. Mark '+(out===1?'it':'them')+' returned first.</div>' +
+        '<div class="modal-actions"><button class="btn primary" id="modal-cancel">Got it</button></div>';
+      overlay.classList.add("open");
+      document.getElementById("modal-cancel").onclick = closeModal;
+      return;
+    }
+    body.innerHTML = '' +
+      '<h3>Remove "'+esc(book.title)+'"?</h3>' +
+      '<div class="book-sub">This removes the title from the catalog. Past loan history is kept.</div>' +
+      '<div class="modal-actions">' +
+        '<button class="btn ghost" id="modal-cancel">Cancel</button>' +
+        '<button class="btn danger" id="modal-delete">Remove book</button>' +
+      '</div>';
+    overlay.classList.add("open");
+    document.getElementById("modal-cancel").onclick = closeModal;
+    document.getElementById("modal-delete").onclick = async function(){
+      state.books = state.books.filter(function(b){ return b.id !== bookId; });
+      closeModal();
+      await saveData();
+      showToast('"'+book.title+'" removed from catalog');
+      render();
+    };
+  }
+
+  /* ---------- handlers ---------- */
+  function attachViewHandlers(){
+    var searchInput = document.getElementById("search-input");
+    if(searchInput){
+      searchInput.oninput = function(e){ state.search = e.target.value; render(); preserveFocus("search-input"); };
+    }
+    var genreFilter = document.getElementById("genre-filter");
+    if(genreFilter){
+      genreFilter.onchange = function(e){ state.genreFilter = e.target.value; render(); };
+    }
+
+    document.querySelectorAll("[data-checkout]").forEach(function(btn){
+      btn.onclick = function(){ openCheckoutModal(btn.dataset.checkout); };
+    });
+    document.querySelectorAll("[data-edit]").forEach(function(btn){
+      btn.onclick = function(){ openEditModal(btn.dataset.edit); };
+    });
+    document.querySelectorAll("[data-delete]").forEach(function(btn){
+      btn.onclick = function(){ openDeleteConfirm(btn.dataset.delete); };
+    });
+    document.querySelectorAll("[data-return]").forEach(function(btn){
+      btn.onclick = async function(){
+        var loan = state.loans.find(function(l){ return l.id === btn.dataset.return; });
+        if(!loan) return;
+        loan.returnedAt = todayISO();
+        await saveData();
+        var book = state.books.find(function(b){ return b.id === loan.bookId; });
+        showToast((book?('"'+book.title+'"'):"Book")+" marked returned");
+        render();
+      };
+    });
+    document.querySelectorAll("[data-goto]").forEach(function(btn){
+      btn.onclick = function(){ state.view = btn.dataset.goto; render(); };
+    });
+
+    var addForm = document.getElementById("add-form");
+    if(addForm){
+      addForm.onsubmit = async function(e){
+        e.preventDefault();
+        var titleField = document.getElementById("f-title").closest(".field");
+        var authorField = document.getElementById("f-author").closest(".field");
+        var copiesField = document.getElementById("f-copies").closest(".field");
+        var title = document.getElementById("f-title").value.trim();
+        var author = document.getElementById("f-author").value.trim();
+        var copiesRaw = document.getElementById("f-copies").value.trim();
+        var copies = parseInt(copiesRaw, 10);
+
+        var valid = true;
+        if(!title){ titleField.classList.add("invalid"); valid=false; } else titleField.classList.remove("invalid");
+        if(!author){ authorField.classList.add("invalid"); valid=false; } else authorField.classList.remove("invalid");
+        if(!copiesRaw || isNaN(copies) || copies < 1 || !Number.isInteger(copies)){
+          copiesField.classList.add("invalid"); valid=false;
+        } else copiesField.classList.remove("invalid");
+        if(!valid) return;
+
+        state.books.push({
+          id: uid(),
+          title: title,
+          author: author,
+          genre: document.getElementById("f-genre").value,
+          copies: copies,
+          call: document.getElementById("f-call").value.trim(),
+          isbn: document.getElementById("f-isbn").value.trim()
+        });
+        await saveData();
+        showToast('"'+title+'" added to the catalog');
+        state.view = "catalog";
+        render();
+      };
+    }
+  }
+
+  function preserveFocus(id){
+    var el = document.getElementById(id);
+    if(el){
+      var val = el.value;
+      el.focus();
+      el.value = val;
+      el.selectionStart = el.selectionEnd = val.length;
+    }
+  }
+
+  document.getElementById("nav").addEventListener("click", function(e){
+    var btn = e.target.closest("button[data-view]");
+    if(!btn) return;
+    state.view = btn.dataset.view;
+    state.search = "";
+    state.genreFilter = "";
+    render();
+  });
+
+  document.getElementById("overlay").addEventListener("click", function(e){
+    if(e.target.id === "overlay") closeModal();
+  });
+
+  /* ---------- boot ---------- */
+  (async function init(){
+    render();
+    await loadData();
+    seedIfEmpty();
+    await saveData();
+    render();
+  })();
+
+})();
+</script>
+</body>
+</html>
