@@ -1,802 +1,2077 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Archival Library Catalog</title>
+<title>NEXUS LIBRARY — 3D Archive</title>
 
 <style>
-:root {
-    --bg: #f4f7f5;
-    --card: #ffffff;
-    --text: #17231c;
-    --muted: #6d776f;
-    --border: #dfe6e1;
-    --primary: #176b3a;
-    --primary-dark: #0f4d2a;
-    --primary-light: #e2f4e8;
-    --danger: #c83c3c;
-    --shadow: 0 12px 35px rgba(20, 45, 30, .08);
+/* =========================================================
+   NEXUS LIBRARY 3D
+   Single-file HTML / CSS / JavaScript
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root{
+    --bg:#050713;
+    --bg2:#080b1b;
+    --panel:rgba(13,18,40,.72);
+    --panel2:rgba(18,24,51,.82);
+
+    --line:rgba(120,145,255,.18);
+    --line2:rgba(120,145,255,.35);
+
+    --text:#f4f7ff;
+    --muted:#8993b7;
+
+    --cyan:#55eaff;
+    --blue:#6c7cff;
+    --violet:#a96cff;
+    --green:#54f0a0;
+    --red:#ff637d;
+    --yellow:#ffd66b;
+
+    --shadow:
+        0 25px 70px rgba(0,0,0,.55),
+        0 0 50px rgba(77,104,255,.08);
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-body {
-    font-family: Inter, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    transition: .3s;
+html{
+    scroll-behavior:smooth;
 }
 
-button,
-input,
-select {
-    font: inherit;
-}
+body{
+    min-height:100vh;
+    color:var(--text);
+    font-family:Inter,Arial,sans-serif;
 
-button {
-    cursor: pointer;
-}
-
-.container {
-    width: min(1450px, 94%);
-    margin: auto;
-}
-
-/* ================= HEADER ================= */
-
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: rgba(255,255,255,.92);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border);
-}
-
-.nav {
-    height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #176b3a, #48a66a);
-    color: white;
-    display: grid;
-    place-items: center;
-    font-size: 21px;
-    box-shadow: 0 8px 18px rgba(23,107,58,.25);
-}
-
-.brand h2 {
-    font-size: 18px;
-}
-
-.brand small {
-    color: var(--muted);
-}
-
-.nav-actions {
-    display: flex;
-    gap: 9px;
-}
-
-/* ================= BUTTONS ================= */
-
-.btn {
-    border: 1px solid var(--border);
-    background: white;
-    color: var(--text);
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: .2s;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,.08);
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
-.btn-primary:hover {
-    background: var(--primary-dark);
-}
-
-.btn-danger {
-    color: var(--danger);
-}
-
-/* ================= HERO ================= */
-
-main {
-    padding: 32px 0 60px;
-}
-
-.hero {
     background:
-        radial-gradient(circle at 90% 20%, rgba(72,166,106,.18), transparent 30%),
-        linear-gradient(135deg, #ffffff, #edf7f0);
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    padding: 35px;
-    box-shadow: var(--shadow);
-    margin-bottom: 24px;
-}
-
-.eyebrow {
-    color: var(--primary);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-}
-
-.hero h1 {
-    font-family: Georgia, serif;
-    font-size: clamp(32px, 4vw, 52px);
-    line-height: 1.05;
-    margin-bottom: 12px;
-}
-
-.hero p {
-    color: var(--muted);
-    max-width: 720px;
-    line-height: 1.7;
-}
-
-.hero-bottom {
-    margin-top: 25px;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-/* ================= STATS ================= */
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 24px;
-}
-
-.stat {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 5px 20px rgba(0,0,0,.04);
-}
-
-.stat-icon {
-    font-size: 24px;
-}
-
-.stat h3 {
-    font-size: 27px;
-    margin-top: 10px;
-}
-
-.stat p {
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 3px;
-}
-
-/* ================= LAYOUT ================= */
-
-.layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 20px;
-}
-
-/* ================= SIDEBAR ================= */
-
-.sidebar {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 20px;
-    height: fit-content;
-    position: sticky;
-    top: 92px;
-    box-shadow: 0 5px 20px rgba(0,0,0,.04);
-}
-
-.sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.sidebar h3 {
-    font-size: 16px;
-}
-
-.reset {
-    border: 0;
-    background: none;
-    color: var(--primary);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.filter-section {
-    padding: 18px 0;
-    border-top: 1px solid var(--border);
-}
-
-.filter-section:first-of-type {
-    border-top: 0;
-}
-
-.filter-title {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: var(--muted);
-    margin-bottom: 11px;
-    text-transform: uppercase;
-}
-
-.search-box {
-    position: relative;
-}
-
-.search-box input {
-    width: 100%;
-    border: 1px solid var(--border);
-    background: #f7f9f8;
-    padding: 12px 13px 12px 38px;
-    border-radius: 10px;
-    outline: none;
-}
-
-.search-box input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(23,107,58,.1);
-}
-
-.search-icon {
-    position: absolute;
-    left: 13px;
-    top: 11px;
-}
-
-.check {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 4px;
-    font-size: 13px;
-}
-
-.check-left {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.check input {
-    accent-color: var(--primary);
-}
-
-.count {
-    color: var(--muted);
-}
-
-/* ================= CONTENT ================= */
-
-.content {
-    min-width: 0;
-}
-
-.toolbar {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,.04);
-}
-
-.toolbar-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.result-count {
-    font-size: 14px;
-}
-
-.badge {
-    background: var(--primary-light);
-    color: var(--primary);
-    padding: 5px 9px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.toolbar-right {
-    display: flex;
-    gap: 8px;
-}
-
-select {
-    border: 1px solid var(--border);
-    background: white;
-    border-radius: 9px;
-    padding: 9px 12px;
-    outline: none;
-}
-
-/* ================= TABLE ================= */
-
-.table-wrap {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th {
-    background: #f0f4f1;
-    text-align: left;
-    padding: 14px;
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .8px;
-}
-
-td {
-    padding: 16px 14px;
-    border-top: 1px solid var(--border);
-    vertical-align: middle;
-    font-size: 13px;
-}
-
-tr:hover td {
-    background: #fafcfb;
-}
-
-.book {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.cover {
-    width: 48px;
-    height: 64px;
-    border-radius: 7px;
-    background: linear-gradient(145deg, #224c35, #83aa91);
-    display: grid;
-    place-items: center;
-    color: white;
-    font-size: 22px;
-    flex-shrink: 0;
-    box-shadow: 0 5px 10px rgba(0,0,0,.12);
-}
+        radial-gradient(circle at 15% 15%,rgba(83,116,255,.15),transparent 30%),
+        radial-gradient(circle at 85% 25%,rgba(172,84,255,.13),transparent 28%),
+        radial-gradient(circle at 50% 100%,rgba(30,220,255,.08),transparent 35%),
+        var(--bg);
 
-.book strong {
-    display: block;
-    font-family: Georgia, serif;
-    font-size: 15px;
-    margin-bottom: 4px;
+    overflow-x:hidden;
 }
 
-.book span {
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.call-number {
-    background: #eef2ef;
-    display: inline-block;
-    padding: 5px 8px;
-    border-radius: 6px;
-    font-weight: 700;
-    margin-bottom: 5px;
-}
-
-.location {
-    color: var(--muted);
-    line-height: 1.6;
-}
-
-.status {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-}
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
 
-.status::before {
-    content: "";
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: currentColor;
-}
-
-.available {
-    color: #16723b;
-    background: #ddf4e5;
-}
-
-.checked {
-    color: #9a6611;
-    background: #fff1cc;
-}
-
-.actions {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
 
-.action {
-    border: 1px solid var(--border);
-    background: white;
-    padding: 7px 9px;
-    border-radius: 7px;
-    font-size: 11px;
-    font-weight: 700;
-}
+    background-image:
+        linear-gradient(rgba(91,116,255,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(91,116,255,.045) 1px,transparent 1px);
 
-.action:hover {
-    background: var(--primary);
-    color: white;
-}
+    background-size:55px 55px;
 
-/* ================= CARDS ================= */
+    mask-image:linear-gradient(
+        to bottom,
+        black,
+        transparent 90%
+    );
 
-.cards {
-    display: none;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    z-index:-3;
 }
 
-.book-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 17px;
-    padding: 18px;
-    box-shadow: 0 5px 20px rgba(0,0,0,.04);
-    transition: .2s;
-}
+body::after{
+    content:"";
+    position:fixed;
+    width:500px;
+    height:500px;
 
-.book-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-}
+    left:-180px;
+    top:30%;
 
-.card-top {
-    display: flex;
-    gap: 14px;
-}
+    border-radius:50%;
 
-.card-cover {
-    width: 70px;
-    height: 95px;
-    border-radius: 9px;
-    background: linear-gradient(145deg, #224c35, #83aa91);
-    display: grid;
-    place-items: center;
-    color: white;
-    font-size: 28px;
-}
+    background:rgba(80,130,255,.08);
 
-.card-info {
-    flex: 1;
-}
+    filter:blur(100px);
 
-.card-info h3 {
-    font-family: Georgia, serif;
-    font-size: 19px;
-    margin-bottom: 5px;
+    pointer-events:none;
+    z-index:-2;
 }
 
-.card-info p {
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.5;
-}
+/* moving light */
 
-.card-details {
-    margin-top: 17px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
+.ambient{
+    position:fixed;
+    width:600px;
+    height:600px;
 
-.detail {
-    background: #f5f7f6;
-    border-radius: 9px;
-    padding: 10px;
-}
+    right:-200px;
+    bottom:-200px;
 
-.detail small {
-    display: block;
-    color: var(--muted);
-    margin-bottom: 4px;
-}
+    border-radius:50%;
 
-.card-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 15px;
-}
+    background:
+        radial-gradient(
+            circle,
+            rgba(170,95,255,.16),
+            transparent 65%
+        );
 
-/* ================= MODAL ================= */
-
-.modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(10,20,14,.55);
-    backdrop-filter: blur(5px);
-    z-index: 100;
-    place-items: center;
-    padding: 20px;
-}
+    filter:blur(40px);
 
-.modal-overlay.show {
-    display: grid;
-}
+    animation:
+        ambientMove 10s ease-in-out infinite alternate;
 
-.modal {
-    width: min(600px, 100%);
-    background: var(--card);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 25px 80px rgba(0,0,0,.25);
-    animation: popup .2s ease;
+    pointer-events:none;
+    z-index:-1;
 }
 
-@keyframes popup {
-    from {
-        transform: scale(.95);
-        opacity: 0;
+@keyframes ambientMove{
+    from{
+        transform:translate(0,0) scale(1);
     }
-    to {
-        transform: scale(1);
-        opacity: 1;
+
+    to{
+        transform:translate(-150px,-100px) scale(1.25);
     }
 }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+/* =========================================================
+   TOP NAV
+   ========================================================= */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    height:76px;
+
+    border-bottom:1px solid var(--line);
+
+    background:
+        rgba(5,7,19,.72);
+
+    backdrop-filter:blur(25px);
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.35);
 }
 
-.close {
-    border: 0;
-    background: #edf1ee;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    font-size: 18px;
+.nav-inner{
+    width:min(1450px,94%);
+    height:100%;
+
+    margin:auto;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 13px;
+.brand{
+    display:flex;
+    align-items:center;
+    gap:13px;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.logo{
+    width:45px;
+    height:45px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #72f4ff,
+            #6575ff 45%,
+            #a864ff
+        );
+
+    box-shadow:
+        0 0 25px rgba(75,226,255,.28),
+        inset 0 1px 1px rgba(255,255,255,.5);
+
+    transform:
+        perspective(400px)
+        rotateX(8deg)
+        rotateY(-8deg);
+
+    animation:
+        logoFloat 4s ease-in-out infinite;
 }
 
-.form-group.full {
-    grid-column: 1 / -1;
-}
-
-.form-group label {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted);
-}
-
-.form-group input,
-.form-group select {
-    width: 100%;
-    padding: 11px;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    outline: none;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-    border-color: var(--primary);
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-/* ================= TOAST ================= */
-
-.toast {
-    position: fixed;
-    right: 25px;
-    bottom: 25px;
-    background: #18251d;
-    color: white;
-    padding: 13px 18px;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.2);
-    transform: translateY(100px);
-    opacity: 0;
-    transition: .3s;
-    z-index: 200;
-}
-
-.toast.show {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* ================= DARK MODE ================= */
-
-body.dark {
-    --bg: #101612;
-    --card: #18201b;
-    --text: #eaf2ec;
-    --muted: #98a59c;
-    --border: #2b372e;
-    --primary-light: #1e3c29;
-}
-
-body.dark .topbar {
-    background: rgba(24,32,27,.92);
-}
-
-body.dark .btn,
-body.dark select,
-body.dark .action,
-body.dark .form-group input,
-body.dark .form-group select {
-    background: #202a23;
-    color: var(--text);
-}
-
-body.dark .search-box input,
-body.dark .detail,
-body.dark th {
-    background: #202a23;
-}
-
-body.dark tr:hover td {
-    background: #1d271f;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:1100px) {
-    .stats {
-        grid-template-columns: repeat(2, 1fr);
+@keyframes logoFloat{
+    0%,100%{
+        transform:
+            perspective(400px)
+            rotateX(8deg)
+            rotateY(-8deg)
+            translateY(0);
     }
 
-    .layout {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        position: static;
+    50%{
+        transform:
+            perspective(400px)
+            rotateX(-5deg)
+            rotateY(8deg)
+            translateY(-5px);
     }
 }
 
-@media(max-width:800px) {
-    .nav-actions .optional {
-        display: none;
-    }
+.logo svg{
+    width:24px;
+}
 
-    .hero {
-        padding: 25px;
-    }
+.brand-name{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:.4px;
+}
 
-    .toolbar {
-        flex-direction: column;
-        align-items: stretch;
-    }
+.brand-sub{
+    color:var(--muted);
+    font-size:10px;
+    margin-top:2px;
+    letter-spacing:1.5px;
+}
 
-    .toolbar-right {
-        justify-content: space-between;
-    }
+.nav-actions{
+    display:flex;
+    gap:9px;
+}
 
-    .table-wrap {
-        overflow-x: auto;
-    }
+.btn{
+    border:1px solid var(--line2);
 
-    table {
-        min-width: 850px;
-    }
+    background:
+        rgba(255,255,255,.035);
 
-    .cards {
-        grid-template-columns: 1fr;
+    color:var(--text);
+
+    border-radius:11px;
+
+    padding:10px 15px;
+
+    font-size:12px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+
+    transition:
+        transform .25s ease,
+        border .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
+}
+
+.btn svg{
+    width:15px;
+    height:15px;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+
+    border-color:
+        rgba(85,234,255,.6);
+
+    background:
+        rgba(85,234,255,.08);
+
+    box-shadow:
+        0 10px 30px rgba(30,220,255,.12);
+}
+
+.btn-primary{
+    border:none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5eeeff,
+            #6676ff 55%,
+            #a764ff
+        );
+
+    color:white;
+
+    box-shadow:
+        0 8px 30px rgba(89,110,255,.3);
+}
+
+.btn-primary:hover{
+    box-shadow:
+        0 12px 40px rgba(89,110,255,.5);
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.container{
+    width:min(1450px,94%);
+    margin:auto;
+}
+
+main{
+    padding:
+        45px 0
+        90px;
+}
+
+/* =========================================================
+   HERO 3D
+   ========================================================= */
+
+.hero{
+    min-height:430px;
+
+    display:grid;
+
+    grid-template-columns:
+        1.1fr
+        .9fr;
+
+    gap:40px;
+
+    align-items:center;
+
+    perspective:1800px;
+
+    margin-bottom:45px;
+}
+
+.hero-copy{
+    position:relative;
+    z-index:5;
+}
+
+.eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+
+    padding:7px 12px;
+
+    border:1px solid
+        rgba(85,234,255,.25);
+
+    border-radius:30px;
+
+    background:
+        rgba(85,234,255,.05);
+
+    color:var(--cyan);
+
+    font-size:10px;
+    font-weight:700;
+
+    letter-spacing:1.6px;
+
+    margin-bottom:22px;
+}
+
+.live-dot{
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:
+        0 0 12px var(--green);
+
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    50%{
+        opacity:.35;
+        transform:scale(.6);
     }
 }
 
-@media(max-width:550px) {
-    .stats {
-        grid-template-columns: 1fr;
+.hero h1{
+    max-width:720px;
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:
+        clamp(42px,6vw,76px);
+
+    line-height:.98;
+
+    letter-spacing:-3px;
+
+    margin-bottom:24px;
+}
+
+.gradient-text{
+    background:
+        linear-gradient(
+            100deg,
+            #fff,
+            #7eefff 35%,
+            #8e7aff 70%,
+            #db9aff
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    color:transparent;
+}
+
+.hero p{
+    max-width:620px;
+
+    color:var(--muted);
+
+    line-height:1.8;
+
+    font-size:15px;
+
+    margin-bottom:28px;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+/* =========================================================
+   3D HOLOGRAM
+   ========================================================= */
+
+.hero-visual{
+    height:400px;
+
+    display:grid;
+    place-items:center;
+
+    perspective:1200px;
+}
+
+.holo{
+    width:310px;
+    height:350px;
+
+    position:relative;
+
+    transform-style:preserve-3d;
+
+    transform:
+        rotateX(8deg)
+        rotateY(-17deg)
+        rotateZ(2deg);
+
+    animation:
+        holoFloat 6s ease-in-out infinite;
+
+    filter:
+        drop-shadow(
+            0 35px 45px rgba(0,0,0,.55)
+        );
+}
+
+@keyframes holoFloat{
+    0%,100%{
+        transform:
+            rotateX(8deg)
+            rotateY(-17deg)
+            rotateZ(2deg)
+            translateY(0);
     }
 
-    .nav {
-        height: 62px;
+    50%{
+        transform:
+            rotateX(-3deg)
+            rotateY(15deg)
+            rotateZ(-1deg)
+            translateY(-18px);
+    }
+}
+
+.holo-face{
+    position:absolute;
+    inset:0;
+
+    border:1px solid
+        rgba(105,220,255,.35);
+
+    border-radius:24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(89,238,255,.10),
+            rgba(98,95,255,.08),
+            rgba(172,96,255,.12)
+        );
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+        inset 0 1px 1px
+            rgba(255,255,255,.18),
+        0 0 70px
+            rgba(74,148,255,.15);
+}
+
+.holo-face::before{
+    content:"";
+
+    position:absolute;
+
+    inset:14px;
+
+    border:1px solid
+        rgba(100,220,255,.12);
+
+    border-radius:15px;
+}
+
+.holo-top{
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    left:30px;
+    top:-35px;
+
+    transform:
+        rotateX(72deg)
+        translateZ(25px);
+
+    border-radius:50%;
+
+    border:
+        1px solid
+        rgba(85,234,255,.3);
+
+    box-shadow:
+        0 0 30px
+        rgba(85,234,255,.1);
+}
+
+.holo-core{
+    position:absolute;
+
+    left:50%;
+    top:48%;
+
+    transform:
+        translate(-50%,-50%)
+        translateZ(60px);
+
+    width:105px;
+    height:105px;
+
+    border-radius:50%;
+
+    display:grid;
+    place-items:center;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.95) 0 3%,
+            rgba(89,234,255,.8) 5%,
+            rgba(103,110,255,.4) 30%,
+            transparent 70%
+        );
+
+    box-shadow:
+        0 0 60px
+        rgba(85,234,255,.5);
+
+    animation:
+        coreSpin 5s linear infinite;
+}
+
+@keyframes coreSpin{
+    to{
+        transform:
+            translate(-50%,-50%)
+            translateZ(60px)
+            rotate(360deg);
+    }
+}
+
+.holo-core svg{
+    width:40px;
+
+    filter:
+        drop-shadow(
+            0 0 10px white
+        );
+}
+
+.holo-line{
+    position:absolute;
+
+    height:1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--cyan),
+            transparent
+        );
+
+    opacity:.4;
+
+    animation:
+        scan 3s linear infinite;
+}
+
+.holo-line.one{
+    left:20px;
+    right:20px;
+    top:35%;
+}
+
+.holo-line.two{
+    left:35px;
+    right:35px;
+    top:60%;
+    animation-delay:1s;
+}
+
+@keyframes scan{
+    0%{
+        transform:translateX(-40px);
+        opacity:0;
     }
 
-    .brand h2 {
-        font-size: 15px;
+    50%{
+        opacity:.7;
     }
 
-    .brand small {
-        display: none;
+    100%{
+        transform:translateX(40px);
+        opacity:0;
+    }
+}
+
+.holo-label{
+    position:absolute;
+
+    left:25px;
+    bottom:25px;
+
+    color:var(--muted);
+
+    font-size:9px;
+
+    letter-spacing:2px;
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stats{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:16px;
+
+    margin-bottom:42px;
+}
+
+.stat{
+    position:relative;
+
+    min-height:145px;
+
+    padding:22px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,25,54,.78),
+            rgba(8,11,27,.82)
+        );
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:var(--shadow);
+
+    transform-style:preserve-3d;
+
+    transition:
+        transform .4s cubic-bezier(.2,.8,.2,1),
+        border .3s;
+}
+
+.stat:hover{
+    transform:
+        perspective(800px)
+        rotateX(5deg)
+        rotateY(-5deg)
+        translateY(-8px);
+
+    border-color:
+        rgba(85,234,255,.35);
+}
+
+.stat::after{
+    content:"";
+
+    position:absolute;
+
+    width:80px;
+    height:80px;
+
+    right:-20px;
+    bottom:-30px;
+
+    border-radius:50%;
+
+    background:
+        rgba(85,234,255,.08);
+
+    filter:blur(20px);
+}
+
+.stat-icon{
+    width:38px;
+    height:38px;
+
+    border-radius:12px;
+
+    display:grid;
+    place-items:center;
+
+    margin-bottom:15px;
+
+    background:
+        rgba(85,234,255,.08);
+
+    border:
+        1px solid
+        rgba(85,234,255,.16);
+
+    color:var(--cyan);
+}
+
+.stat-icon svg{
+    width:18px;
+}
+
+.stat-number{
+    font-family:"Space Grotesk";
+
+    font-size:28px;
+
+    font-weight:700;
+
+    letter-spacing:-1px;
+}
+
+.stat-label{
+    color:var(--muted);
+
+    font-size:11px;
+
+    margin-top:5px;
+}
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.section-head{
+    display:flex;
+
+    justify-content:space-between;
+    align-items:end;
+
+    margin-bottom:18px;
+}
+
+.section-title{
+    font-family:"Space Grotesk";
+
+    font-size:23px;
+
+    letter-spacing:-.7px;
+}
+
+.section-sub{
+    color:var(--muted);
+
+    font-size:11px;
+
+    margin-top:5px;
+}
+
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
+
+.workspace{
+    display:grid;
+
+    grid-template-columns:
+        275px
+        1fr;
+
+    gap:20px;
+
+    align-items:start;
+}
+
+/* =========================================================
+   FILTER PANEL
+   ========================================================= */
+
+.filters{
+    position:sticky;
+    top:95px;
+
+    padding:22px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(17,24,53,.9),
+            rgba(7,10,24,.85)
+        );
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:var(--shadow);
+
+    overflow:hidden;
+}
+
+.filters::before{
+    content:"";
+
+    position:absolute;
+
+    top:-80px;
+    left:-80px;
+
+    width:180px;
+    height:180px;
+
+    border-radius:50%;
+
+    background:
+        rgba(85,234,255,.08);
+
+    filter:blur(30px);
+}
+
+.filter-head{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:22px;
+
+    position:relative;
+}
+
+.filter-head h3{
+    font-family:"Space Grotesk";
+
+    font-size:14px;
+}
+
+.reset{
+    background:none;
+    border:0;
+
+    color:var(--cyan);
+
+    font-size:10px;
+
+    cursor:pointer;
+}
+
+.filter-group{
+    padding:
+        18px 0;
+
+    border-top:
+        1px solid var(--line);
+}
+
+.filter-title{
+    color:#aeb7d6;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.2px;
+
+    font-size:9px;
+
+    font-weight:700;
+
+    margin-bottom:12px;
+}
+
+.search-box{
+    position:relative;
+}
+
+.search-box svg{
+    position:absolute;
+
+    left:12px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:15px;
+
+    color:var(--muted);
+}
+
+.search-box input{
+    width:100%;
+
+    padding:
+        12px
+        12px
+        12px
+        36px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:12px;
+
+    outline:none;
+
+    background:
+        rgba(0,0,0,.18);
+
+    color:white;
+
+    font-size:11px;
+
+    transition:.25s;
+}
+
+.search-box input:focus{
+    border-color:
+        rgba(85,234,255,.55);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(85,234,255,.06);
+}
+
+.check{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:7px 0;
+
+    color:#aeb7d6;
+
+    font-size:11px;
+
+    cursor:pointer;
+}
+
+.check-left{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.check input{
+    appearance:none;
+
+    width:15px;
+    height:15px;
+
+    border-radius:5px;
+
+    border:
+        1px solid
+        rgba(120,145,255,.4);
+
+    background:
+        rgba(0,0,0,.2);
+
+    cursor:pointer;
+}
+
+.check input:checked{
+    background:
+        linear-gradient(
+            135deg,
+            var(--cyan),
+            var(--blue)
+        );
+
+    border-color:transparent;
+}
+
+.check input:checked::after{
+    content:"✓";
+
+    display:block;
+
+    text-align:center;
+
+    color:#06101b;
+
+    font-size:10px;
+
+    font-weight:900;
+}
+
+.count{
+    color:#566080;
+
+    font-size:9px;
+}
+
+/* =========================================================
+   CONTENT PANEL
+   ========================================================= */
+
+.catalog{
+    min-width:0;
+
+    padding:20px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:22px;
+
+    background:
+        rgba(8,12,29,.64);
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:var(--shadow);
+}
+
+.toolbar{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:20px;
+
+    flex-wrap:wrap;
+}
+
+.toolbar-left{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.result{
+    font-size:12px;
+
+    color:#b8c0dc;
+}
+
+.result strong{
+    color:white;
+}
+
+.live{
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    border:
+        1px solid
+        rgba(84,240,160,.18);
+
+    background:
+        rgba(84,240,160,.05);
+
+    color:var(--green);
+
+    padding:6px 9px;
+
+    border-radius:20px;
+
+    font-size:9px;
+
+    font-weight:700;
+
+    letter-spacing:.6px;
+}
+
+.live i{
+    width:5px;
+    height:5px;
+
+    background:var(--green);
+
+    border-radius:50%;
+
+    box-shadow:
+        0 0 9px var(--green);
+}
+
+.toolbar-right{
+    display:flex;
+
+    gap:8px;
+
+    align-items:center;
+}
+
+select{
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid var(--line);
+
+    color:#bfc7e1;
+
+    border-radius:10px;
+
+    padding:9px 12px;
+
+    outline:none;
+
+    font-size:10px;
+}
+
+/* =========================================================
+   3D BOOK GRID
+   ========================================================= */
+
+.book-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(245px,1fr)
+        );
+
+    gap:20px;
+
+    perspective:1600px;
+}
+
+/* =========================================================
+   BOOK CARD
+   ========================================================= */
+
+.book-card{
+    position:relative;
+
+    min-height:335px;
+
+    padding:20px;
+
+    border:
+        1px solid
+        rgba(130,150,255,.16);
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(22,29,62,.9),
+            rgba(9,13,30,.95)
+        );
+
+    transform-style:preserve-3d;
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.3);
+
+    transition:
+        transform .18s ease,
+        border .3s,
+        box-shadow .3s;
+
+    overflow:hidden;
+}
+
+.book-card::before{
+    content:"";
+
+    position:absolute;
+
+    inset:-1px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            130deg,
+            transparent 20%,
+            rgba(85,234,255,.15),
+            transparent 60%
+        );
+
+    opacity:0;
+
+    transition:.4s;
+
+    pointer-events:none;
+}
+
+.book-card:hover::before{
+    opacity:1;
+}
+
+.book-card:hover{
+    border-color:
+        rgba(85,234,255,.35);
+
+    box-shadow:
+        0 30px 65px rgba(0,0,0,.5),
+        0 0 35px rgba(85,234,255,.08);
+}
+
+/* book spine */
+
+.book-visual{
+    height:115px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin-bottom:17px;
+
+    transform:translateZ(30px);
+
+    perspective:700px;
+}
+
+.book{
+    position:relative;
+
+    width:80px;
+    height:105px;
+
+    border-radius:4px 9px 9px 4px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #192344,
+            #5266c9 30%,
+            #151d42
+        );
+
+    box-shadow:
+        8px 15px 20px rgba(0,0,0,.45),
+        inset 3px 0 3px rgba(255,255,255,.08);
+
+    transform:
+        rotateY(-22deg)
+        rotateX(5deg);
+
+    transition:.4s;
+
+    overflow:hidden;
+}
+
+.book-card:hover .book{
+    transform:
+        rotateY(-8deg)
+        rotateX(3deg)
+        translateY(-6px)
+        scale(1.04);
+}
+
+.book::before{
+    content:"";
+
+    position:absolute;
+
+    left:8px;
+    right:8px;
+
+    top:13px;
+    bottom:13px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.2);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.2);
+}
+
+.book::after{
+    content:"";
+
+    position:absolute;
+
+    top:45%;
+    left:0;
+    right:0;
+
+    height:1px;
+
+    background:
+        rgba(255,255,255,.15);
+}
+
+.book-title-mini{
+    position:absolute;
+
+    top:27px;
+    left:12px;
+    right:12px;
+
+    color:#dce4ff;
+
+    font-family:"Space Grotesk";
+
+    font-size:7px;
+
+    text-align:center;
+
+    line-height:1.4;
+
+    transform:
+        rotateZ(-90deg)
+        translateX(-7px);
+
+    transform-origin:center;
+}
+
+.book-category{
+    position:absolute;
+
+    top:15px;
+    right:15px;
+
+    padding:5px 8px;
+
+    border-radius:20px;
+
+    background:
+        rgba(85,234,255,.07);
+
+    border:
+        1px solid
+        rgba(85,234,255,.16);
+
+    color:var(--cyan);
+
+    font-size:8px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:.8px;
+
+    transform:translateZ(35px);
+}
+
+.book-status{
+    position:absolute;
+
+    bottom:15px;
+    left:15px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:5px;
+
+    padding:5px 8px;
+
+    border-radius:20px;
+
+    font-size:8px;
+
+    font-weight:700;
+
+    transform:translateZ(35px);
+}
+
+.book-status.available{
+    color:var(--green);
+
+    background:
+        rgba(84,240,160,.06);
+
+    border:
+        1px solid
+        rgba(84,240,160,.15);
+}
+
+.book-status.checked{
+    color:var(--red);
+
+    background:
+        rgba(255,99,125,.06);
+
+    border:
+        1px solid
+        rgba(255,99,125,.15);
+}
+
+.book-status::before{
+    content:"";
+
+    width:5px;
+    height:5px;
+
+    border-radius:50%;
+
+    background:currentColor;
+
+    box-shadow:
+        0 0 8px currentColor;
+}
+
+.book-title{
+    font-family:"Space Grotesk";
+
+    font-size:16px;
+
+    line-height:1.3;
+
+    font-weight:700;
+
+    letter-spacing:-.3px;
+
+    margin-bottom:5px;
+
+    transform:translateZ(25px);
+}
+
+.book-author{
+    color:#7984a9;
+
+    font-size:10px;
+
+    margin-bottom:14px;
+
+    transform:translateZ(20px);
+}
+
+.book-line{
+    height:1px;
+
+    background:
+        var(--line);
+
+    margin-bottom:13px;
+}
+
+.book-meta{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:8px;
+
+    color:#747fa3;
+
+    font-size:9px;
+
+    transform:translateZ(18px);
+}
+
+.meta-label{
+    display:block;
+
+    color:#4e587a;
+
+    font-size:7px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.8px;
+
+    margin-bottom:3px;
+}
+
+.call-number{
+    font-family:monospace;
+
+    color:#aeb9df;
+
+    font-size:9px;
+}
+
+.book-actions{
+    display:flex;
+
+    gap:7px;
+
+    margin-top:17px;
+
+    transform:translateZ(25px);
+}
+
+.card-btn{
+    flex:1;
+
+    padding:8px 7px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:9px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    color:#aeb8d6;
+
+    font-size:9px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.card-btn:hover{
+    border-color:
+        rgba(85,234,255,.35);
+
+    color:var(--cyan);
+
+    background:
+        rgba(85,234,255,.05);
+
+    transform:translateY(-2px);
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty{
+    grid-column:1/-1;
+
+    padding:70px 20px;
+
+    text-align:center;
+
+    border:
+        1px dashed
+        var(--line2);
+
+    border-radius:18px;
+
+    color:var(--muted);
+}
+
+.empty svg{
+    width:40px;
+
+    margin:0 auto 15px;
+
+    opacity:.4;
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal{
+    position:fixed;
+
+    inset:0;
+
+    z-index:500;
+
+    display:none;
+
+    place-items:center;
+
+    padding:20px;
+
+    background:
+        rgba(2,4,12,.76);
+
+    backdrop-filter:
+        blur(18px);
+}
+
+.modal.show{
+    display:grid;
+}
+
+.modal-box{
+    width:min(650px,100%);
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    padding:30px;
+
+    border:
+        1px solid
+        rgba(120,145,255,.3);
+
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(22,29,64,.96),
+            rgba(7,10,25,.98)
+        );
+
+    box-shadow:
+        0 40px 100px rgba(0,0,0,.7),
+        0 0 70px rgba(75,105,255,.1);
+
+    animation:
+        modalIn .35s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes modalIn{
+    from{
+        opacity:0;
+
+        transform:
+            perspective(900px)
+            rotateX(-8deg)
+            translateY(30px)
+            scale(.94);
     }
 
-    .hero h1 {
-        font-size: 34px;
+    to{
+        opacity:1;
+
+        transform:none;
+    }
+}
+
+.modal-head{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    margin-bottom:25px;
+}
+
+.modal-head h2{
+    font-family:"Space Grotesk";
+
+    font-size:24px;
+
+    line-height:1.2;
+}
+
+.close{
+    width:34px;
+    height:34px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:10px;
+
+    background:
+        rgba(255,255,255,.03);
+
+    color:#9ba5c6;
+
+    cursor:pointer;
+}
+
+.close:hover{
+    color:white;
+
+    border-color:
+        rgba(255,99,125,.4);
+}
+
+.detail-grid{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+}
+
+.detail{
+    padding:15px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:13px;
+
+    background:
+        rgba(255,255,255,.025);
+}
+
+.detail.full{
+    grid-column:1/-1;
+}
+
+.detail small{
+    display:block;
+
+    color:#56617f;
+
+    font-size:8px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    margin-bottom:6px;
+}
+
+.detail strong{
+    color:#dce3fb;
+
+    font-size:12px;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.form-grid{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:15px;
+}
+
+.field{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:7px;
+}
+
+.field.full{
+    grid-column:1/-1;
+}
+
+.field label{
+    color:#7782a4;
+
+    font-size:9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+}
+
+.field input,
+.field select{
+    width:100%;
+
+    padding:12px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius:11px;
+
+    background:
+        rgba(0,0,0,.2);
+
+    color:white;
+
+    outline:none;
+
+    font-size:11px;
+}
+
+.field input:focus,
+.field select:focus{
+    border-color:
+        rgba(85,234,255,.5);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(85,234,255,.05);
+}
+
+.modal-foot{
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:8px;
+
+    margin-top:25px;
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast{
+    position:fixed;
+
+    right:25px;
+    bottom:25px;
+
+    z-index:900;
+
+    padding:14px 18px;
+
+    border:
+        1px solid
+        rgba(85,234,255,.3);
+
+    border-radius:13px;
+
+    background:
+        rgba(10,15,34,.92);
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.5),
+        0 0 30px rgba(85,234,255,.08);
+
+    color:#dceaff;
+
+    font-size:11px;
+
+    transform:
+        translateY(120px);
+
+    opacity:0;
+
+    transition:.35s;
+}
+
+.toast.show{
+    transform:none;
+
+    opacity:1;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer{
+    margin-top:50px;
+
+    padding-top:25px;
+
+    border-top:
+        1px solid var(--line);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    color:#4f597a;
+
+    font-size:9px;
+
+    letter-spacing:.5px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:1050px){
+
+    .hero{
+        grid-template-columns:1fr;
+
+        text-align:center;
     }
 
-    .form-grid {
-        grid-template-columns: 1fr;
+    .hero p{
+        margin-left:auto;
+        margin-right:auto;
     }
 
-    .form-group.full {
-        grid-column: auto;
+    .hero-buttons{
+        justify-content:center;
+    }
+
+    .hero-visual{
+        height:330px;
+    }
+
+    .stats{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .workspace{
+        grid-template-columns:1fr;
+    }
+
+    .filters{
+        position:static;
+    }
+}
+
+@media(max-width:650px){
+
+    .navbar{
+        height:65px;
+    }
+
+    .nav-actions .optional{
+        display:none;
+    }
+
+    .brand-sub{
+        display:none;
+    }
+
+    main{
+        padding-top:30px;
+    }
+
+    .hero h1{
+        font-size:43px;
+
+        letter-spacing:-2px;
+    }
+
+    .holo{
+        transform:
+            scale(.78)
+            rotateX(5deg)
+            rotateY(-12deg);
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+
+        gap:10px;
+    }
+
+    .stat{
+        min-height:125px;
+
+        padding:16px;
+    }
+
+    .stat-number{
+        font-size:23px;
+    }
+
+    .catalog{
+        padding:13px;
+    }
+
+    .toolbar{
+        align-items:stretch;
+    }
+
+    .toolbar-right{
+        width:100%;
+    }
+
+    .toolbar-right select{
+        flex:1;
+    }
+
+    .book-grid{
+        grid-template-columns:1fr;
+    }
+
+    .detail-grid,
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .detail.full,
+    .field.full{
+        grid-column:auto;
+    }
+
+    .footer{
+        flex-direction:column;
+
+        gap:8px;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+        animation:none !important;
+        transition:none !important;
     }
 }
 </style>
@@ -804,243 +2079,542 @@ body.dark tr:hover td {
 
 <body>
 
-<!-- ================= NAVIGATION ================= -->
+<div class="ambient"></div>
 
-<header class="topbar">
-    <div class="container nav">
+<!-- =====================================================
+     NAVBAR
+     ===================================================== -->
 
-        <div class="brand">
-            <div class="logo">📚</div>
-            <div>
-                <h2>Archival Library</h2>
-                <small>Accession Registry • HUM-FL2</small>
+<header class="navbar">
+
+<div class="nav-inner">
+
+    <div class="brand">
+
+        <div class="logo">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.6">
+
+                <path d="M4 5.5
+                         C6.5 4.2 9.3 4.4 12 5.8
+                         V20
+                         C9.3 18.6 6.5 18.4 4 19.7Z"/>
+
+                <path d="M20 5.5
+                         C17.5 4.2 14.7 4.4 12 5.8
+                         V20
+                         C14.7 18.6 17.5 18.4 20 19.7Z"/>
+
+            </svg>
+
+        </div>
+
+        <div>
+            <div class="brand-name">
+                NEXUS LIBRARY
+            </div>
+
+            <div class="brand-sub">
+                INTELLIGENT ARCHIVE SYSTEM
             </div>
         </div>
 
-        <div class="nav-actions">
-            <button class="btn optional" onclick="toggleDark()">🌙 Theme</button>
-            <button class="btn" onclick="exportCSV()">⬇ Export</button>
-            <button class="btn btn-primary" onclick="openAddModal()">＋ Add Book</button>
-        </div>
+    </div>
+
+    <div class="nav-actions">
+
+        <button class="btn optional"
+                onclick="toggleAmbient()">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.7">
+
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2"/>
+                <path d="M12 20v2"/>
+                <path d="m4.9 4.9 1.4 1.4"/>
+                <path d="m17.7 17.7 1.4 1.4"/>
+                <path d="M2 12h2"/>
+                <path d="M20 12h2"/>
+
+            </svg>
+
+            Effects
+
+        </button>
+
+        <button class="btn"
+                onclick="exportCSV()">
+
+            Export
+
+        </button>
+
+        <button class="btn btn-primary"
+                onclick="openAddModal()">
+
+            + Add Book
+
+        </button>
 
     </div>
+
+</div>
+
 </header>
 
 
 <main>
+
 <div class="container">
 
-<!-- ================= HERO ================= -->
+<!-- =====================================================
+     HERO
+     ===================================================== -->
 
 <section class="hero">
 
-    <div class="eyebrow">Digital Collection Management</div>
+<div class="hero-copy">
 
-    <h1>Archival Catalog<br>& Book Inventory</h1>
+    <div class="eyebrow">
+
+        <span class="live-dot"></span>
+
+        LIVE ARCHIVE NODE · HUM-FL2
+
+    </div>
+
+    <h1>
+
+        Your library,
+        <span class="gradient-text">
+            reimagined.
+        </span>
+
+    </h1>
 
     <p>
-        Search, monitor and manage the library's collection of
-        monographs, periodicals, rare books and special collections
-        from one unified catalog.
+        Explore, organize and circulate your entire
+        collection through a futuristic intelligent
+        archive interface. Search thousands of volumes,
+        inspect records and manage circulation from
+        one command center.
     </p>
 
-    <div class="hero-bottom">
-        <button class="btn btn-primary" onclick="focusSearch()">
-            🔎 Search Collection
+    <div class="hero-buttons">
+
+        <button class="btn btn-primary"
+                onclick="focusSearch()">
+
+            Search the archive
+
         </button>
 
-        <button class="btn" onclick="showToast('MARC21 catalog synchronized successfully')">
-            ✓ MARC21 Validated
+        <button class="btn"
+                onclick="showToast('MARC21 catalog synchronized successfully')">
+
+            ✓ Catalog synchronized
+
         </button>
 
-        <button class="btn" onclick="showToast('All systems operational')">
-            ● System Online
-        </button>
     </div>
+
+</div>
+
+
+<div class="hero-visual">
+
+    <div class="holo">
+
+        <div class="holo-face"></div>
+
+        <div class="holo-top"></div>
+
+        <div class="holo-core">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="white"
+                 stroke-width="1.4">
+
+                <path d="M4 5.5
+                         C6.5 4.2 9.3 4.4 12 5.8
+                         V20
+                         C9.3 18.6 6.5 18.4 4 19.7Z"/>
+
+                <path d="M20 5.5
+                         C17.5 4.2 14.7 4.4 12 5.8
+                         V20
+                         C14.7 18.6 17.5 18.4 20 19.7Z"/>
+
+            </svg>
+
+        </div>
+
+        <div class="holo-line one"></div>
+        <div class="holo-line two"></div>
+
+        <div class="holo-label">
+            ARCHIVE CORE / ONLINE
+        </div>
+
+    </div>
+
+</div>
 
 </section>
 
 
-<!-- ================= STATISTICS ================= -->
+<!-- =====================================================
+     STATS
+     ===================================================== -->
 
 <section class="stats">
 
     <div class="stat">
-        <div class="stat-icon">📚</div>
-        <h3>148,920</h3>
-        <p>Total catalogued folios</p>
-    </div>
 
-    <div class="stat">
-        <div class="stat-icon">✓</div>
-        <h3>2,840</h3>
-        <p>Available on shelf</p>
-    </div>
+        <div class="stat-icon">
+            ◈
+        </div>
 
-    <div class="stat">
-        <div class="stat-icon">↗</div>
-        <h3>984</h3>
-        <p>Currently circulating</p>
-    </div>
+        <div class="stat-number">
+            148,920
+        </div>
 
-    <div class="stat">
-        <div class="stat-icon">🏛</div>
-        <h3>216</h3>
-        <p>Rare manuscripts</p>
-    </div>
-
-</section>
-
-
-<!-- ================= MAIN LAYOUT ================= -->
-
-<div class="layout">
-
-<!-- ================= SIDEBAR ================= -->
-
-<aside class="sidebar">
-
-    <div class="sidebar-header">
-        <h3>🔎 Filters</h3>
-        <button class="reset" onclick="resetFilters()">Reset All</button>
-    </div>
-
-    <div class="filter-section">
-
-        <div class="filter-title">Keyword Search</div>
-
-        <div class="search-box">
-            <span class="search-icon">🔎</span>
-
-            <input
-                id="searchInput"
-                type="text"
-                placeholder="Search books, authors..."
-                oninput="filterBooks()"
-            >
+        <div class="stat-label">
+            Total catalogued records
         </div>
 
     </div>
 
 
-    <div class="filter-section">
+    <div class="stat">
 
-        <div class="filter-title">Availability</div>
+        <div class="stat-icon">
+            ✓
+        </div>
+
+        <div class="stat-number">
+            2,840
+        </div>
+
+        <div class="stat-label">
+            Available on shelf
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-icon">
+            ↗
+        </div>
+
+        <div class="stat-number">
+            984
+        </div>
+
+        <div class="stat-label">
+            Currently circulating
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-icon">
+            ◆
+        </div>
+
+        <div class="stat-number">
+            216
+        </div>
+
+        <div class="stat-label">
+            Rare manuscripts
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SECTION TITLE
+     ===================================================== -->
+
+<div class="section-head">
+
+    <div>
+
+        <div class="section-title">
+            Collection explorer
+        </div>
+
+        <div class="section-sub">
+            Navigate the intelligent catalog
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     WORKSPACE
+     ===================================================== -->
+
+<div class="workspace">
+
+
+<!-- =====================================================
+     FILTERS
+     ===================================================== -->
+
+<aside class="filters">
+
+    <div class="filter-head">
+
+        <h3>
+            Archive filters
+        </h3>
+
+        <button class="reset"
+                onclick="resetFilters()">
+
+            Reset
+
+        </button>
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <div class="filter-title">
+            Search
+        </div>
+
+        <div class="search-box">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8">
+
+                <circle cx="11" cy="11" r="7"/>
+                <path d="m20 20-3.5-3.5"/>
+
+            </svg>
+
+            <input
+                id="searchInput"
+                type="text"
+                placeholder="Search title, author..."
+                oninput="filterBooks()">
+
+        </div>
+
+    </div>
+
+
+    <div class="filter-group">
+
+        <div class="filter-title">
+            Availability
+        </div>
 
         <label class="check">
+
             <span class="check-left">
+
                 <input
                     type="checkbox"
                     class="status-filter"
                     value="available"
-                    onchange="filterBooks()"
-                >
+                    onchange="filterBooks()">
+
                 Available
+
             </span>
-            <span class="count">2,840</span>
+
+            <span class="count">
+                2840
+            </span>
+
         </label>
 
+
         <label class="check">
+
             <span class="check-left">
+
                 <input
                     type="checkbox"
                     class="status-filter"
                     value="checked"
-                    onchange="filterBooks()"
-                >
-                Checked Out
+                    onchange="filterBooks()">
+
+                Checked out
+
             </span>
-            <span class="count">984</span>
+
+            <span class="count">
+                984
+            </span>
+
         </label>
 
     </div>
 
 
-    <div class="filter-section">
+    <div class="filter-group">
 
-        <div class="filter-title">Classification</div>
-
-        <label class="check">
-            <span class="check-left">
-                <input
-                    type="checkbox"
-                    class="category-filter"
-                    value="Philosophy"
-                    onchange="filterBooks()"
-                >
-                Philosophy
-            </span>
-            <span class="count">1,208</span>
-        </label>
+        <div class="filter-title">
+            Classification
+        </div>
 
         <label class="check">
+
             <span class="check-left">
+
                 <input
                     type="checkbox"
                     class="category-filter"
                     value="Science"
-                    onchange="filterBooks()"
-                >
+                    onchange="filterBooks()">
+
                 Science
+
             </span>
-            <span class="count">2,110</span>
+
+            <span class="count">
+                2110
+            </span>
+
         </label>
 
+
         <label class="check">
+
             <span class="check-left">
+
+                <input
+                    type="checkbox"
+                    class="category-filter"
+                    value="Philosophy"
+                    onchange="filterBooks()">
+
+                Philosophy
+
+            </span>
+
+            <span class="count">
+                1208
+            </span>
+
+        </label>
+
+
+        <label class="check">
+
+            <span class="check-left">
+
                 <input
                     type="checkbox"
                     class="category-filter"
                     value="Literature"
-                    onchange="filterBooks()"
-                >
+                    onchange="filterBooks()">
+
                 Literature
+
             </span>
-            <span class="count">900</span>
+
+            <span class="count">
+                900
+            </span>
+
         </label>
 
     </div>
 
 
-    <div class="filter-section">
+    <div class="filter-group">
 
-        <div class="filter-title">Format</div>
+        <div class="filter-title">
+            Format
+        </div>
 
         <label class="check">
+
             <span class="check-left">
+
                 <input
                     type="checkbox"
                     class="format-filter"
                     value="Hardcover"
-                    onchange="filterBooks()"
-                >
+                    onchange="filterBooks()">
+
                 Hardcover
+
             </span>
+
         </label>
 
+
         <label class="check">
+
             <span class="check-left">
+
                 <input
                     type="checkbox"
                     class="format-filter"
                     value="Paperback"
-                    onchange="filterBooks()"
-                >
+                    onchange="filterBooks()">
+
                 Paperback
+
             </span>
+
         </label>
 
     </div>
 
 
-    <div class="filter-section">
+    <div class="filter-group">
 
-        <div class="filter-title">Collection Status</div>
+        <div style="
+            padding:13px;
+            border:1px solid rgba(84,240,160,.14);
+            background:rgba(84,240,160,.04);
+            border-radius:12px;
+        ">
 
-        <div style="background:var(--primary-light);padding:12px;border-radius:10px;font-size:12px;line-height:1.6">
-            <strong>✓ MARC21 Validated</strong>
-            <br>
-            100% catalog synchronization
+            <div style="
+                color:#54f0a0;
+                font-size:9px;
+                font-weight:700;
+                margin-bottom:5px;
+            ">
+                ● SYSTEM ONLINE
+            </div>
+
+            <div style="
+                color:#66718f;
+                font-size:9px;
+                line-height:1.5;
+            ">
+                Catalog synchronization active.
+                All records validated.
+            </div>
+
         </div>
 
     </div>
@@ -1048,88 +2622,110 @@ body.dark tr:hover td {
 </aside>
 
 
-<!-- ================= CONTENT ================= -->
+<!-- =====================================================
+     CATALOG
+     ===================================================== -->
 
-<section class="content">
+<section class="catalog">
 
     <div class="toolbar">
 
         <div class="toolbar-left">
 
-            <div class="result-count">
-                Showing <strong id="resultCount">6</strong>
+            <div class="result">
+                Showing
+                <strong id="resultCount">6</strong>
                 records
             </div>
 
-            <span class="badge">Live Catalog</span>
+            <div class="live">
+                <i></i>
+                LIVE
+            </div>
 
         </div>
+
 
         <div class="toolbar-right">
 
-            <select id="sortSelect" onchange="sortBooks()">
-                <option value="title">Sort: Title</option>
-                <option value="author">Sort: Author</option>
-                <option value="year">Sort: Publication Year</option>
-            </select>
+            <select
+                id="sortSelect"
+                onchange="sortBooks()">
 
-            <button
-                class="btn"
-                id="viewBtn"
-                onclick="toggleView()"
-            >
-                ▦ Cards
-            </button>
+                <option value="title">
+                    Sort: Title
+                </option>
+
+                <option value="author">
+                    Sort: Author
+                </option>
+
+                <option value="year">
+                    Sort: Newest
+                </option>
+
+            </select>
 
         </div>
 
     </div>
 
 
-    <!-- TABLE -->
-
-    <div class="table-wrap" id="tableView">
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Book / Author</th>
-                    <th>Call Number</th>
-                    <th>Location</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-
-            <tbody id="bookTable"></tbody>
-
-        </table>
-
+    <div
+        class="book-grid"
+        id="bookGrid">
     </div>
-
-
-    <!-- CARDS -->
-
-    <div class="cards" id="cardView"></div>
 
 </section>
 
 </div>
 
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="footer">
+
+    <span>
+        NEXUS LIBRARY SYSTEM · NODE HUM-FL2
+    </span>
+
+    <span>
+        SECURE ARCHIVE · MARC21 VALIDATED
+    </span>
+
+</footer>
+
 </div>
+
 </main>
 
 
-<!-- ================= VIEW MODAL ================= -->
+<!-- =====================================================
+     VIEW MODAL
+     ===================================================== -->
 
-<div class="modal-overlay" id="viewModal">
+<div
+    class="modal"
+    id="viewModal">
 
-    <div class="modal">
+    <div class="modal-box">
 
-        <div class="modal-header">
-            <h2 id="modalTitle">Book Details</h2>
-            <button class="close" onclick="closeModal('viewModal')">×</button>
+        <div class="modal-head">
+
+            <h2 id="modalTitle">
+                Book details
+            </h2>
+
+            <button
+                class="close"
+                onclick="closeModal('viewModal')">
+
+                ×
+
+            </button>
+
         </div>
 
         <div id="modalContent"></div>
@@ -1139,89 +2735,180 @@ body.dark tr:hover td {
 </div>
 
 
-<!-- ================= ADD BOOK MODAL ================= -->
+<!-- =====================================================
+     ADD BOOK MODAL
+     ===================================================== -->
 
-<div class="modal-overlay" id="addModal">
+<div
+    class="modal"
+    id="addModal">
 
-    <div class="modal">
+    <div class="modal-box">
 
-        <div class="modal-header">
-            <h2>Add New Book</h2>
-            <button class="close" onclick="closeModal('addModal')">×</button>
+        <div class="modal-head">
+
+            <h2>
+                Add new volume
+            </h2>
+
+            <button
+                class="close"
+                onclick="closeModal('addModal')">
+
+                ×
+
+            </button>
+
         </div>
+
 
         <form id="addBookForm">
 
             <div class="form-grid">
 
-                <div class="form-group full">
-                    <label>BOOK TITLE</label>
-                    <input id="newTitle" required placeholder="Enter book title">
+                <div class="field full">
+
+                    <label>
+                        Book title
+                    </label>
+
+                    <input
+                        id="newTitle"
+                        required
+                        placeholder="Enter book title">
+
                 </div>
 
-                <div class="form-group">
-                    <label>AUTHOR</label>
-                    <input id="newAuthor" required placeholder="Author name">
+
+                <div class="field">
+
+                    <label>
+                        Author
+                    </label>
+
+                    <input
+                        id="newAuthor"
+                        required
+                        placeholder="Author name">
+
                 </div>
 
-                <div class="form-group">
-                    <label>PUBLICATION YEAR</label>
-                    <input id="newYear" type="number" required placeholder="2026">
+
+                <div class="field">
+
+                    <label>
+                        Publication year
+                    </label>
+
+                    <input
+                        id="newYear"
+                        type="number"
+                        required
+                        placeholder="2026">
+
                 </div>
 
-                <div class="form-group">
-                    <label>CALL NUMBER</label>
-                    <input id="newCall" required placeholder="QA76 .A12">
+
+                <div class="field">
+
+                    <label>
+                        Call number
+                    </label>
+
+                    <input
+                        id="newCall"
+                        required
+                        placeholder="QA76 .A12">
+
                 </div>
 
-                <div class="form-group">
-                    <label>CATEGORY</label>
+
+                <div class="field">
+
+                    <label>
+                        Category
+                    </label>
 
                     <select id="newCategory">
-                        <option>Science</option>
-                        <option>Philosophy</option>
-                        <option>Literature</option>
+
+                        <option>
+                            Science
+                        </option>
+
+                        <option>
+                            Philosophy
+                        </option>
+
+                        <option>
+                            Literature
+                        </option>
+
                     </select>
 
                 </div>
 
-                <div class="form-group">
-                    <label>FORMAT</label>
+
+                <div class="field">
+
+                    <label>
+                        Format
+                    </label>
 
                     <select id="newFormat">
-                        <option>Hardcover</option>
-                        <option>Paperback</option>
+
+                        <option>
+                            Hardcover
+                        </option>
+
+                        <option>
+                            Paperback
+                        </option>
+
                     </select>
 
                 </div>
 
-                <div class="form-group">
-                    <label>STATUS</label>
+
+                <div class="field">
+
+                    <label>
+                        Status
+                    </label>
 
                     <select id="newStatus">
-                        <option value="available">Available</option>
-                        <option value="checked">Checked Out</option>
+
+                        <option value="available">
+                            Available
+                        </option>
+
+                        <option value="checked">
+                            Checked out
+                        </option>
+
                     </select>
 
                 </div>
 
             </div>
 
-            <div class="modal-footer">
+
+            <div class="modal-foot">
 
                 <button
                     type="button"
                     class="btn"
-                    onclick="closeModal('addModal')"
-                >
+                    onclick="closeModal('addModal')">
+
                     Cancel
+
                 </button>
 
                 <button
                     type="submit"
-                    class="btn btn-primary"
-                >
-                    Add Book
+                    class="btn btn-primary">
+
+                    Add volume
+
                 </button>
 
             </div>
@@ -1233,355 +2920,501 @@ body.dark tr:hover td {
 </div>
 
 
-<!-- TOAST -->
-
-<div class="toast" id="toast"></div>
+<div
+    class="toast"
+    id="toast">
+</div>
 
 
 <script>
 
-/* ================= BOOK DATA ================= */
+/* =========================================================
+   DATA
+   ========================================================= */
 
 let books = [
 
-    {
-        id: 1,
-        title: "The Structure of Scientific Revolutions",
-        author: "Thomas S. Kuhn",
-        year: 1962,
-        publisher: "University of Chicago Press",
-        call: "Q175 .K84",
-        category: "Science",
-        format: "Hardcover",
-        location: "Stacks Level 3 • Bay 14 • Shelf B • Slot 04",
-        status: "available",
-        copies: 3
-    },
+{
+    id:1,
 
-    {
-        id: 2,
-        title: "Foucault's Pendulum",
-        author: "Umberto Eco",
-        year: 1988,
-        publisher: "Trans. William Weaver",
-        call: "PQ4865.C6 P413",
-        category: "Literature",
-        format: "Hardcover",
-        location: "Main Humanities • Floor 2 • Bay 22 • Shelf D",
-        status: "checked",
-        copies: 1
-    },
+    title:"The Structure of Scientific Revolutions",
 
-    {
-        id: 3,
-        title: "Meditations",
-        author: "Marcus Aurelius",
-        year: 180,
-        publisher: "Classical Library",
-        call: "B555 .A7",
-        category: "Philosophy",
-        format: "Paperback",
-        location: "Humanities Wing • Floor 2 • Bay 10 • Shelf A",
-        status: "available",
-        copies: 4
-    },
+    author:"Thomas S. Kuhn",
 
-    {
-        id: 4,
-        title: "A Brief History of Time",
-        author: "Stephen Hawking",
-        year: 1988,
-        publisher: "Bantam Books",
-        call: "QB981 .H377",
-        category: "Science",
-        format: "Paperback",
-        location: "Science Annex • Floor 1 • Bay 04 • Shelf C",
-        status: "available",
-        copies: 5
-    },
+    year:1962,
 
-    {
-        id: 5,
-        title: "The Republic",
-        author: "Plato",
-        year: 380,
-        publisher: "Penguin Classics",
-        call: "JC71 .P6",
-        category: "Philosophy",
-        format: "Hardcover",
-        location: "Humanities Wing • Floor 2 • Bay 08 • Shelf A",
-        status: "checked",
-        copies: 2
-    },
+    publisher:"University of Chicago Press",
 
-    {
-        id: 6,
-        title: "One Hundred Years of Solitude",
-        author: "Gabriel García Márquez",
-        year: 1967,
-        publisher: "Harper & Row",
-        call: "PQ8180.17 .G355",
-        category: "Literature",
-        format: "Hardcover",
-        location: "Literature Stack • Floor 3 • Bay 17 • Shelf F",
-        status: "available",
-        copies: 3
-    }
+    call:"Q175 .K84",
+
+    category:"Science",
+
+    format:"Hardcover",
+
+    location:"Stacks Level 3 · Bay 14 · Shelf B · Slot 04",
+
+    status:"available",
+
+    copies:3
+},
+
+{
+    id:2,
+
+    title:"Foucault's Pendulum",
+
+    author:"Umberto Eco",
+
+    year:1988,
+
+    publisher:"Trans. William Weaver",
+
+    call:"PQ4865.C6 P413",
+
+    category:"Literature",
+
+    format:"Hardcover",
+
+    location:"Main Humanities · Floor 2 · Bay 22 · Shelf D",
+
+    status:"checked",
+
+    copies:1
+},
+
+{
+    id:3,
+
+    title:"Meditations",
+
+    author:"Marcus Aurelius",
+
+    year:180,
+
+    publisher:"Classical Library",
+
+    call:"B555 .A7",
+
+    category:"Philosophy",
+
+    format:"Paperback",
+
+    location:"Humanities Wing · Floor 2 · Bay 10 · Shelf A",
+
+    status:"available",
+
+    copies:4
+},
+
+{
+    id:4,
+
+    title:"A Brief History of Time",
+
+    author:"Stephen Hawking",
+
+    year:1988,
+
+    publisher:"Bantam Books",
+
+    call:"QB981 .H377",
+
+    category:"Science",
+
+    format:"Paperback",
+
+    location:"Science Annex · Floor 1 · Bay 04 · Shelf C",
+
+    status:"available",
+
+    copies:5
+},
+
+{
+    id:5,
+
+    title:"The Republic",
+
+    author:"Plato",
+
+    year:380,
+
+    publisher:"Penguin Classics",
+
+    call:"JC71 .P6",
+
+    category:"Philosophy",
+
+    format:"Hardcover",
+
+    location:"Humanities Wing · Floor 2 · Bay 08 · Shelf A",
+
+    status:"checked",
+
+    copies:2
+},
+
+{
+    id:6,
+
+    title:"One Hundred Years of Solitude",
+
+    author:"Gabriel García Márquez",
+
+    year:1967,
+
+    publisher:"Harper & Row",
+
+    call:"PQ8180.17 .G355",
+
+    category:"Literature",
+
+    format:"Hardcover",
+
+    location:"Literature Stack · Floor 3 · Bay 17 · Shelf F",
+
+    status:"available",
+
+    copies:3
+}
 
 ];
 
 
-/* ================= RENDER ================= */
+/* =========================================================
+   RENDER
+   ========================================================= */
 
-function renderBooks(data = books) {
+function renderBooks(data = books){
 
-    const table = document.getElementById("bookTable");
-    const cards = document.getElementById("cardView");
+    const grid =
+        document.getElementById("bookGrid");
 
-    table.innerHTML = "";
-    cards.innerHTML = "";
+    grid.innerHTML = "";
+
+    if(!data.length){
+
+        grid.innerHTML = `
+
+            <div class="empty">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.4">
+
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="m20 20-3.5-3.5"/>
+
+                </svg>
+
+                <div>
+                    No records found in the archive.
+                </div>
+
+            </div>
+
+        `;
+
+        document.getElementById("resultCount")
+            .textContent = 0;
+
+        return;
+    }
+
 
     data.forEach(book => {
 
+        const available =
+            book.status === "available";
+
         const statusText =
-            book.status === "available"
-            ? "Available on Shelf"
-            : "Checked Out";
+            available
+            ? "AVAILABLE"
+            : "CHECKED OUT";
 
-        const statusClass =
-            book.status === "available"
-            ? "available"
-            : "checked";
+        const action =
+            available
+            ? "Borrow"
+            : "Return";
 
-        table.innerHTML += `
 
-            <tr>
+        const card =
+            document.createElement("div");
 
-                <td>
+        card.className =
+            "book-card";
 
-                    <div class="book">
 
-                        <div class="cover">
-                            📖
-                        </div>
+        card.innerHTML = `
 
-                        <div>
-                            <strong>${book.title}</strong>
+            <div class="book-category">
+                ${book.category}
+            </div>
 
-                            <span>
-                                ${book.author} • ${book.publisher}
-                            </span>
 
-                            <br>
+            <div class="book-visual">
 
-                            <span>
-                                ${book.year} • ${book.format}
-                            </span>
-                        </div>
+                <div class="book">
 
+                    <div class="book-title-mini">
+                        ${book.title}
                     </div>
 
-                </td>
+                </div>
 
-                <td>
+            </div>
+
+
+            <div class="book-status ${available ? "available" : "checked"}">
+                ${statusText}
+            </div>
+
+
+            <div class="book-title">
+                ${book.title}
+            </div>
+
+
+            <div class="book-author">
+                ${book.author}
+            </div>
+
+
+            <div class="book-line"></div>
+
+
+            <div class="book-meta">
+
+                <div>
+
+                    <span class="meta-label">
+                        Year
+                    </span>
+
+                    ${book.year}
+
+                </div>
+
+
+                <div>
+
+                    <span class="meta-label">
+                        Format
+                    </span>
+
+                    ${book.format}
+
+                </div>
+
+
+                <div>
+
+                    <span class="meta-label">
+                        Call number
+                    </span>
 
                     <span class="call-number">
                         ${book.call}
                     </span>
 
-                    <br>
+                </div>
 
-                    <small>
-                        ${book.category}
-                    </small>
 
-                </td>
+                <div>
 
-                <td>
-                    <div class="location">
-                        ${book.location}
-                    </div>
-                </td>
-
-                <td>
-
-                    <span class="status ${statusClass}">
-                        ${statusText}
+                    <span class="meta-label">
+                        Copies
                     </span>
 
-                </td>
-
-                <td>
-
-                    <div class="actions">
-
-                        <button
-                            class="action"
-                            onclick="viewBook(${book.id})"
-                        >
-                            View
-                        </button>
-
-                        <button
-                            class="action"
-                            onclick="borrowBook(${book.id})"
-                        >
-                            ${book.status === "available" ? "Borrow" : "Return"}
-                        </button>
-
-                    </div>
-
-                </td>
-
-            </tr>
-        `;
-
-
-        cards.innerHTML += `
-
-            <div class="book-card">
-
-                <div class="card-top">
-
-                    <div class="card-cover">
-                        📖
-                    </div>
-
-                    <div class="card-info">
-
-                        <h3>${book.title}</h3>
-
-                        <p>
-                            ${book.author}
-                        </p>
-
-                        <br>
-
-                        <span class="status ${statusClass}">
-                            ${statusText}
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="card-details">
-
-                    <div class="detail">
-                        <small>Call Number</small>
-                        <strong>${book.call}</strong>
-                    </div>
-
-                    <div class="detail">
-                        <small>Category</small>
-                        <strong>${book.category}</strong>
-                    </div>
-
-                    <div class="detail">
-                        <small>Year</small>
-                        <strong>${book.year}</strong>
-                    </div>
-
-                    <div class="detail">
-                        <small>Copies</small>
-                        <strong>${book.copies}</strong>
-                    </div>
-
-                </div>
-
-                <div class="card-actions">
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="viewBook(${book.id})"
-                    >
-                        View Record
-                    </button>
-
-                    <button
-                        class="btn"
-                        onclick="borrowBook(${book.id})"
-                    >
-                        ${book.status === "available" ? "Borrow" : "Return"}
-                    </button>
+                    ${book.copies}
 
                 </div>
 
             </div>
+
+
+            <div class="book-actions">
+
+                <button
+                    class="card-btn"
+                    onclick="viewBook(${book.id})">
+
+                    View record
+
+                </button>
+
+                <button
+                    class="card-btn"
+                    onclick="borrowBook(${book.id})">
+
+                    ${action}
+
+                </button>
+
+            </div>
+
         `;
+
+
+        grid.appendChild(card);
+
+        add3DEffect(card);
 
     });
 
-    document.getElementById("resultCount").textContent = data.length;
 
+    document.getElementById("resultCount")
+        .textContent = data.length;
 }
 
 
-/* ================= SEARCH + FILTER ================= */
+/* =========================================================
+   3D MOUSE TILT
+   ========================================================= */
 
-function filterBooks() {
+function add3DEffect(card){
+
+    card.addEventListener(
+        "mousemove",
+        e => {
+
+            const rect =
+                card.getBoundingClientRect();
+
+            const x =
+                e.clientX - rect.left;
+
+            const y =
+                e.clientY - rect.top;
+
+            const centerX =
+                rect.width / 2;
+
+            const centerY =
+                rect.height / 2;
+
+            const rotateY =
+                ((x-centerX)/centerX)*7;
+
+            const rotateX =
+                -((y-centerY)/centerY)*7;
+
+            card.style.transform =
+                `perspective(900px)
+                 rotateX(${rotateX}deg)
+                 rotateY(${rotateY}deg)
+                 translateY(-7px)`;
+
+        }
+    );
+
+
+    card.addEventListener(
+        "mouseleave",
+        () => {
+
+            card.style.transform =
+                "";
+
+        }
+    );
+}
+
+
+/* =========================================================
+   FILTER
+   ========================================================= */
+
+function filterBooks(){
 
     const search =
         document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase();
+            .getElementById("searchInput")
+            .value
+            .toLowerCase()
+            .trim();
+
 
     const statuses =
-        [...document.querySelectorAll(".status-filter:checked")]
+        [...document.querySelectorAll(
+            ".status-filter:checked"
+        )]
         .map(x => x.value);
+
 
     const categories =
-        [...document.querySelectorAll(".category-filter:checked")]
+        [...document.querySelectorAll(
+            ".category-filter:checked"
+        )]
         .map(x => x.value);
+
 
     const formats =
-        [...document.querySelectorAll(".format-filter:checked")]
+        [...document.querySelectorAll(
+            ".format-filter:checked"
+        )]
         .map(x => x.value);
 
 
-    let filtered = books.filter(book => {
+    const filtered =
+        books.filter(book => {
 
-        const searchable =
-            `${book.title} ${book.author} ${book.call} ${book.category}`
-            .toLowerCase();
+            const text =
+                `${book.title}
+                 ${book.author}
+                 ${book.call}
+                 ${book.category}
+                 ${book.publisher}`
+                .toLowerCase();
 
-        const matchesSearch =
-            searchable.includes(search);
 
-        const matchesStatus =
-            statuses.length === 0 ||
-            statuses.includes(book.status);
+            return (
 
-        const matchesCategory =
-            categories.length === 0 ||
-            categories.includes(book.category);
+                text.includes(search)
 
-        const matchesFormat =
-            formats.length === 0 ||
-            formats.includes(book.format);
+                &&
 
-        return (
-            matchesSearch &&
-            matchesStatus &&
-            matchesCategory &&
-            matchesFormat
-        );
+                (
+                    !statuses.length
+                    ||
+                    statuses.includes(book.status)
+                )
 
-    });
+                &&
+
+                (
+                    !categories.length
+                    ||
+                    categories.includes(book.category)
+                )
+
+                &&
+
+                (
+                    !formats.length
+                    ||
+                    formats.includes(book.format)
+                )
+
+            );
+
+        });
 
 
     renderBooks(filtered);
-
 }
 
 
-/* ================= SORT ================= */
+/* =========================================================
+   SORT
+   ========================================================= */
 
-function sortBooks() {
+function sortBooks(){
 
     const value =
         document.getElementById("sortSelect").value;
+
 
     books.sort((a,b) => {
 
@@ -1592,130 +3425,134 @@ function sortBooks() {
             return a.author.localeCompare(b.author);
 
         if(value === "year")
-            return b.year - a.year;
+            return b.year-a.year;
 
     });
 
+
     filterBooks();
-
 }
 
 
-/* ================= VIEW TOGGLE ================= */
+/* =========================================================
+   VIEW BOOK
+   ========================================================= */
 
-let cardMode = false;
-
-function toggleView() {
-
-    cardMode = !cardMode;
-
-    const table =
-        document.getElementById("tableView");
-
-    const cards =
-        document.getElementById("cardView");
-
-    const button =
-        document.getElementById("viewBtn");
-
-
-    if(cardMode) {
-
-        table.style.display = "none";
-        cards.style.display = "grid";
-
-        button.innerHTML = "☷ Table";
-
-    } else {
-
-        table.style.display = "block";
-        cards.style.display = "none";
-
-        button.innerHTML = "▦ Cards";
-
-    }
-
-}
-
-
-/* ================= VIEW BOOK ================= */
-
-function viewBook(id) {
+function viewBook(id){
 
     const book =
-        books.find(b => b.id === id);
+        books.find(
+            b => b.id === id
+        );
 
-    document.getElementById("modalTitle")
-        .textContent = book.title;
 
-    document.getElementById("modalContent").innerHTML = `
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        book.title;
 
-        <div style="display:flex;gap:18px;margin-bottom:20px">
 
-            <div class="card-cover">
-                📖
-            </div>
+    document.getElementById(
+        "modalContent"
+    ).innerHTML = `
 
-            <div>
-                <h3 style="font-family:Georgia;font-size:24px">
-                    ${book.title}
-                </h3>
+        <div style="
+            color:#7f8aaa;
+            font-size:11px;
+            margin-bottom:20px;
+        ">
 
-                <p style="color:var(--muted);margin-top:6px">
-                    ${book.author}
-                </p>
-
-                <p style="color:var(--muted);margin-top:6px">
-                    ${book.publisher}
-                </p>
-
-            </div>
+            ${book.author}
+            ·
+            ${book.publisher}
 
         </div>
 
-        <div class="card-details">
+
+        <div class="detail-grid">
 
             <div class="detail">
-                <small>Publication Year</small>
-                <strong>${book.year}</strong>
+
+                <small>
+                    Publication year
+                </small>
+
+                <strong>
+                    ${book.year}
+                </strong>
+
             </div>
+
 
             <div class="detail">
-                <small>Call Number</small>
-                <strong>${book.call}</strong>
+
+                <small>
+                    Call number
+                </small>
+
+                <strong>
+                    ${book.call}
+                </strong>
+
             </div>
+
 
             <div class="detail">
-                <small>Category</small>
-                <strong>${book.category}</strong>
+
+                <small>
+                    Category
+                </small>
+
+                <strong>
+                    ${book.category}
+                </strong>
+
             </div>
+
 
             <div class="detail">
-                <small>Format</small>
-                <strong>${book.format}</strong>
+
+                <small>
+                    Format
+                </small>
+
+                <strong>
+                    ${book.format}
+                </strong>
+
             </div>
 
-            <div class="detail" style="grid-column:1/-1">
-                <small>Shelving Coordinates</small>
-                <strong>${book.location}</strong>
+
+            <div class="detail full">
+
+                <small>
+                    Shelving coordinates
+                </small>
+
+                <strong>
+                    ${book.location}
+                </strong>
+
             </div>
 
-            <div class="detail" style="grid-column:1/-1">
-                <small>Availability</small>
 
-                <span class="status ${
-                    book.status === "available"
-                    ? "available"
-                    : "checked"
-                }">
+            <div class="detail full">
 
-                    ${
-                        book.status === "available"
-                        ? "Available on Shelf"
-                        : "Checked Out"
-                    }
+                <small>
+                    Availability
+                </small>
 
-                </span>
+                <strong style="
+                    color:${book.status === "available"
+                        ? "#54f0a0"
+                        : "#ff637d"};
+                ">
+
+                    ${book.status === "available"
+                        ? "● Available on shelf"
+                        : "● Currently checked out"}
+
+                </strong>
 
             </div>
 
@@ -1723,190 +3560,304 @@ function viewBook(id) {
 
     `;
 
+
     document
         .getElementById("viewModal")
         .classList.add("show");
-
 }
 
 
-/* ================= BORROW / RETURN ================= */
+/* =========================================================
+   BORROW / RETURN
+   ========================================================= */
 
-function borrowBook(id) {
+function borrowBook(id){
 
     const book =
-        books.find(b => b.id === id);
+        books.find(
+            b => b.id === id
+        );
 
-    if(book.status === "available") {
+
+    if(book.status === "available"){
 
         if(book.copies > 0)
             book.copies--;
 
         book.status = "checked";
 
-        showToast(`"${book.title}" checked out`);
+        showToast(
+            `"${book.title}" checked out`
+        );
 
-    } else {
+    }else{
 
         book.copies++;
 
         book.status = "available";
 
-        showToast(`"${book.title}" returned`);
+        showToast(
+            `"${book.title}" returned`
+        );
 
     }
 
-    filterBooks();
 
+    filterBooks();
 }
 
 
-/* ================= ADD BOOK ================= */
+/* =========================================================
+   ADD BOOK
+   ========================================================= */
 
-function openAddModal() {
+function openAddModal(){
 
     document
         .getElementById("addModal")
         .classList.add("show");
-
 }
 
 
 document
     .getElementById("addBookForm")
-    .addEventListener("submit", function(e) {
+    .addEventListener(
+        "submit",
+        function(e){
 
-        e.preventDefault();
-
-        const newBook = {
-
-            id: Date.now(),
-
-            title:
-                document.getElementById("newTitle").value,
-
-            author:
-                document.getElementById("newAuthor").value,
-
-            year:
-                Number(document.getElementById("newYear").value),
-
-            publisher:
-                "New Acquisition",
-
-            call:
-                document.getElementById("newCall").value,
-
-            category:
-                document.getElementById("newCategory").value,
-
-            format:
-                document.getElementById("newFormat").value,
-
-            location:
-                "New Acquisition • Processing",
-
-            status:
-                document.getElementById("newStatus").value,
-
-            copies: 1
-
-        };
+            e.preventDefault();
 
 
-        books.unshift(newBook);
+            const newBook = {
 
-        this.reset();
+                id:Date.now(),
 
-        closeModal("addModal");
+                title:
+                    document
+                        .getElementById("newTitle")
+                        .value,
 
-        filterBooks();
+                author:
+                    document
+                        .getElementById("newAuthor")
+                        .value,
 
-        showToast("New book added successfully");
+                year:
+                    Number(
+                        document
+                            .getElementById("newYear")
+                            .value
+                    ),
 
-    });
+                publisher:
+                    "NEXUS Acquisition",
+
+                call:
+                    document
+                        .getElementById("newCall")
+                        .value,
+
+                category:
+                    document
+                        .getElementById("newCategory")
+                        .value,
+
+                format:
+                    document
+                        .getElementById("newFormat")
+                        .value,
+
+                location:
+                    "Processing · New acquisition",
+
+                status:
+                    document
+                        .getElementById("newStatus")
+                        .value,
+
+                copies:1
+
+            };
 
 
-/* ================= MODAL ================= */
+            books.unshift(newBook);
 
-function closeModal(id) {
+
+            this.reset();
+
+
+            closeModal("addModal");
+
+
+            filterBooks();
+
+
+            showToast(
+                "New volume added to archive"
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+
+function closeModal(id){
 
     document
         .getElementById(id)
         .classList.remove("show");
-
 }
 
 
 document
-    .querySelectorAll(".modal-overlay")
+    .querySelectorAll(".modal")
     .forEach(modal => {
 
-        modal.addEventListener("click", function(e) {
+        modal.addEventListener(
+            "click",
+            e => {
 
-            if(e.target === modal)
-                modal.classList.remove("show");
+                if(e.target === modal){
 
-        });
+                    modal.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
 
     });
 
 
-/* ================= RESET ================= */
+document.addEventListener(
+    "keydown",
+    e => {
 
-function resetFilters() {
+        if(e.key === "Escape"){
 
-    document.getElementById("searchInput").value = "";
+            document
+                .querySelectorAll(".modal")
+                .forEach(
+                    modal =>
+                        modal.classList.remove(
+                            "show"
+                        )
+                );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+function resetFilters(){
 
     document
-        .querySelectorAll("input[type=checkbox]")
-        .forEach(x => x.checked = false);
+        .getElementById("searchInput")
+        .value = "";
 
-    document.getElementById("sortSelect").value = "title";
+
+    document
+        .querySelectorAll(
+            "input[type=checkbox]"
+        )
+        .forEach(
+            x => x.checked = false
+        );
+
+
+    document
+        .getElementById("sortSelect")
+        .value = "title";
+
 
     filterBooks();
 
-    showToast("Filters reset");
-
-}
-
-
-/* ================= SEARCH FOCUS ================= */
-
-function focusSearch() {
-
-    document
-        .getElementById("searchInput")
-        .focus();
-
-    document
-        .getElementById("searchInput")
-        .scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-
-}
-
-
-/* ================= DARK MODE ================= */
-
-function toggleDark() {
-
-    document.body.classList.toggle("dark");
 
     showToast(
-        document.body.classList.contains("dark")
-        ? "Dark mode enabled"
-        : "Light mode enabled"
+        "Archive filters reset"
     );
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function focusSearch(){
+
+    const input =
+        document.getElementById(
+            "searchInput"
+        );
+
+
+    input.focus();
+
+
+    input.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+    });
+}
+
+
+/* =========================================================
+   AMBIENT EFFECT
+   ========================================================= */
+
+function toggleAmbient(){
+
+    document.body.classList.toggle(
+        "minimal"
+    );
+
+
+    const minimal =
+        document.body.classList.contains(
+            "minimal"
+        );
+
+
+    if(minimal){
+
+        document
+            .querySelector(".ambient")
+            .style.display = "none";
+
+        showToast(
+            "Ambient effects reduced"
+        );
+
+    }else{
+
+        document
+            .querySelector(".ambient")
+            .style.display = "block";
+
+        showToast(
+            "Ambient effects enabled"
+        );
+
+    }
 
 }
 
 
-/* ================= CSV EXPORT ================= */
+/* =========================================================
+   CSV EXPORT
+   ========================================================= */
 
-function exportCSV() {
+function exportCSV(){
 
     const headers = [
         "Title",
@@ -1921,86 +3872,153 @@ function exportCSV() {
         "Copies"
     ];
 
-    const rows = books.map(book => [
 
-        book.title,
-        book.author,
-        book.year,
-        book.publisher,
-        book.call,
-        book.category,
-        book.format,
-        book.location,
-        book.status,
-        book.copies
+    const rows =
+        books.map(book => [
 
-    ]);
+            book.title,
+            book.author,
+            book.year,
+            book.publisher,
+            book.call,
+            book.category,
+            book.format,
+            book.location,
+            book.status,
+            book.copies
+
+        ]);
 
 
-    const csv = [
-
-        headers,
-
-        ...rows
-
-    ].map(row =>
-
-        row.map(value =>
-            `"${String(value).replaceAll('"','""')}"`
-        ).join(",")
-
-    ).join("\n");
+    const csv =
+        [headers,...rows]
+        .map(
+            row =>
+                row
+                .map(
+                    value =>
+                        `"${String(value)
+                            .replaceAll('"','""')}"`
+                )
+                .join(",")
+        )
+        .join("\n");
 
 
     const blob =
-        new Blob([csv], {
-            type: "text/csv"
-        });
+        new Blob(
+            [csv],
+            {
+                type:"text/csv"
+            }
+        );
+
 
     const url =
         URL.createObjectURL(blob);
 
+
     const a =
         document.createElement("a");
 
+
     a.href = url;
-    a.download = "library-catalog.csv";
+
+    a.download =
+        "nexus-library-catalog.csv";
+
 
     a.click();
 
+
     URL.revokeObjectURL(url);
 
-    showToast("Catalog exported successfully");
 
+    showToast(
+        "Catalog exported successfully"
+    );
 }
 
 
-/* ================= TOAST ================= */
+/* =========================================================
+   TOAST
+   ========================================================= */
 
-function showToast(message) {
+function showToast(message){
 
     const toast =
         document.getElementById("toast");
 
-    toast.textContent = message;
+
+    toast.textContent =
+        message;
+
 
     toast.classList.add("show");
 
-    setTimeout(() => {
 
-        toast.classList.remove("show");
+    clearTimeout(
+        window.toastTimer
+    );
 
-    }, 2500);
 
+    window.toastTimer =
+        setTimeout(
+            () =>
+                toast.classList.remove(
+                    "show"
+                ),
+            2600
+        );
 }
 
 
-/* ================= INITIAL LOAD ================= */
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
 
 renderBooks();
+
+
+/* =========================================================
+   GLOBAL PARALLAX
+   ========================================================= */
+
+document.addEventListener(
+    "mousemove",
+    e => {
+
+        const x =
+            (e.clientX /
+            window.innerWidth -
+            .5);
+
+        const y =
+            (e.clientY /
+            window.innerHeight -
+            .5);
+
+
+        const holo =
+            document.querySelector(
+                ".holo"
+            );
+
+
+        if(holo){
+
+            holo.style.transform =
+                `
+                rotateX(${8-y*8}deg)
+                rotateY(${-17+x*14}deg)
+                rotateZ(2deg)
+                `;
+        }
+
+    }
+);
 
 </script>
 
 </body>
 </html>
-```
